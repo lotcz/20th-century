@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  neo4j:
+    image: neo4j:4.4.29-community
+    env_file:
+      - .env
+    ports:
+      - 7474:7474
+      - 7687:7687
+    volumes:
+      - ./neo4j/data:/data
+
+  api:
+    image: fsfe/pipenv:python-3.8
+    depends_on:
+      - neo4j
+    volumes:
+      - ./app:/app
+    env_file:
+      - .env
+    ports:
+      - 5000:5000
+    working_dir: /app
+    command: bash -c "pipenv install && pipenv run flask --debug run -h 0.0.0.0"

@@ -47,6 +47,7 @@ export default class GlobeRenderer extends DomRenderer {
 		this.camera = new THREE.PerspectiveCamera(50,this.game.viewBoxSize.x / this.game.viewBoxSize.y, 1, 50);
 		this.camera.layers.enable(0); // enabled by default
 		this.camera.layers.enable(1);
+		this.camera.layers.enable(2);
 
 		this.ambientLight = new THREE.AmbientLight(0xe0e0e0);
 		this.scene.add(this.ambientLight);
@@ -150,6 +151,12 @@ export default class GlobeRenderer extends DomRenderer {
 		}
 		if (visible && !this.camera.layers.isEnabled(1)) {
 			this.camera.layers.enable(1);
+		}
+		if (this.camera.layers.isEnabled(2) && visible) {
+			this.camera.layers.disable(2);
+		}
+		if ((!visible) && !this.camera.layers.isEnabled(2)) {
+			this.camera.layers.enable(2);
 		}
 	}
 

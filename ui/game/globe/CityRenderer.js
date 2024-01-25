@@ -40,6 +40,7 @@ export default class CityRenderer extends RendererBase {
 		this.textSprite = new THREE.Sprite(textMaterial);
 		this.textSprite.scale.set(5, 1);
 		this.scene.add(this.textSprite);
+		this.textSprite.layers.set(2);
 
 		this.updatePosition();
 	}

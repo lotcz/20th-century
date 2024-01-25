@@ -33,7 +33,7 @@ export default class CanvasBackgroundRenderer extends CanvasRenderer {
 		this.drawRect(
 			new Vector2(),
 			this.game.viewBoxSize,
-			'rgba(10, 20, 40)'
+			'rgba(10, 20, 30)'
 		);
 		const MAGNITUDE = 400;
 		for (let i = 0; i < MAGNITUDE; i++) {

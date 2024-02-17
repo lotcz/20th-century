@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import RendererBase from "wgge/core/renderer/RendererBase";
 import GpsUtil from "../util/GpsUtil";
-import DOMHelper from "wgge/core/helper/DOMHelper";
+import Constants from "../util/Constants";
 
 export default class CityRenderer extends RendererBase {
 
@@ -25,8 +25,9 @@ export default class CityRenderer extends RendererBase {
 			new THREE.SphereGeometry(0.1, 8, 8),
 			new THREE.MeshLambertMaterial({color: 0xf0f0f0})
 		);
+		this.cityMesh.layers.set(Constants.LAYER_CLOSE);
 		this.scene.add(this.cityMesh);
-
+/*
 		const canvas = DOMHelper.createElement(document.body, "canvas", "hidden");
 		canvas.width = 250;
 		canvas.height = 50;
@@ -41,7 +42,7 @@ export default class CityRenderer extends RendererBase {
 		this.textSprite.scale.set(5, 1);
 		this.scene.add(this.textSprite);
 		this.textSprite.layers.set(2);
-
+*/
 		this.updatePosition();
 	}
 
@@ -59,8 +60,10 @@ export default class CityRenderer extends RendererBase {
 	updatePosition() {
 		const position = GpsUtil.coordsToPosition(this.model.coordinates, 6.35);
 		this.cityMesh.position.set(position.x, position.y, position.z);
+		/*
 		const position2 = GpsUtil.coordsToPosition(this.model.coordinates, 6.5);
 		this.textSprite.position.set(position2.x, position2.y, position2.z);
+		 */
 	}
 
 }

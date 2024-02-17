@@ -29,12 +29,6 @@ export default class GlobeModel extends ObjectModel {
 	rotating;
 
 	/**
-	 * @type FloatValue
-	 * Size of the globe
-	 */
-	globeDiameter;
-
-	/**
 	 * @type Vector2
 	 * GPS coordinates of atmosphere rotation
 	 */
@@ -56,7 +50,6 @@ export default class GlobeModel extends ObjectModel {
 
 		this.rotating = this.addProperty('rotating', new Vector2(0, 0));
 
-		this.globeDiameter = this.addProperty('globeDiameter', new FloatValue(12.76));
 		this.atmoCoordinates = this.addProperty('atmoCoordinates', new Vector2());
 
 		this.cities = this.addProperty('cities', new ModelNodeCollection());

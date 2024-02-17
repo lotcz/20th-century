@@ -28,6 +28,7 @@ export default class InteriorModel extends ObjectModel {
 		this.globe = this.addProperty('globe', new GlobeModel());
 		this.background = this.addProperty('background', new ImageModel());
 		this.background.uri.set('img/interior2.png');
+		this.background.zoom.set(0);
 
 	}
 

@@ -1,0 +1,49 @@
+STATS
+
+- year
+- score
+- knowledge points
+
+GLOBE
+
+- moving on orbital trajectory
+- explore earth to discover places
+- to open a time portal to past, learn about an Event, place and person
+- to future you can travel instantly by speeding up time
+
+KNOWLEDGEBASE
+
+- places
+- people
+- events
+- time portals
+
+RESEARCH
+
+- probe abducted people to learn about events, places and people
+- make cattle or human autopsy to KP
+
+- develop better tech:
+  - light range
+  - radar range (globe and action)
+  - battery capacity
+  - crop signs
+  - cattle butcherer radius
+  - abductor radius
+  - interrogator capacity
+  - interrogator efficiency
+
+ACTION
+
+- only allowed at night
+- gather score
+- abduct people or cattle to probe them later
+- leave crop signs to gain score (+100..1000)
+- butcher cattle to gain score (+10)
+
+- types
+  - city
+  - village
+  - forest
+  - mountains/snow
+  - ocean

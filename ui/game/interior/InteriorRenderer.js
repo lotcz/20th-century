@@ -33,9 +33,8 @@ export default class InteriorRenderer extends DomRenderer {
 
 		this.addChild(new GlobeRenderer(this.game, this.model.globe, globe));
 
-		this.addChild(new ImageToCanvasRenderer(this.game, this.model.background, interior));
-
-
+		this.imageRenderer = new ImageToCanvasRenderer(this.game, this.model.background, interior);
+		this.addChild(this.imageRenderer);
 
 		this.resize();
 	}
@@ -49,9 +48,7 @@ export default class InteriorRenderer extends DomRenderer {
 
 	}
 
-
 	resize() {
 		this.model.background.size.set(this.game.viewBoxSize);
-
 	}
 }

@@ -2,6 +2,8 @@ import ControllerBase from "wgge/core/controller/ControllerBase";
 import FloatValue from "wgge/core/model/value/FloatValue";
 import HttpHelper from "wgge/core/helper/HttpHelper";
 import CityModel from "./CityModel";
+import Constants from "../util/Constants";
+import NumberHelper from "wgge/core/helper/NumberHelper";
 
 const HALF_CIRCLE = 180;
 const QUARTER_CIRCLE = 90;
@@ -92,7 +94,14 @@ export default class GlobeController extends ControllerBase {
 	}
 
 	onZoom(z) {
-		this.model.cameraDistance.increase(z > 0 ? 0.5 : -0.5);
+		this.model.cameraDistance.increase(z > 0 ? 1 : -1);
+		this.model.cameraDistance.set(
+			NumberHelper.between(
+				Constants.MIN_DISTANCE_RADIUS,
+				Constants.MAX_DISTANCE_RADIUS,
+				this.model.cameraDistance.get()
+			)
+		);
 	}
 
 	onKeyDown(k) {

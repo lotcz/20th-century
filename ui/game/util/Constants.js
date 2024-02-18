@@ -10,10 +10,16 @@ export default class Constants {
 	static EARTH_RADIUS = Constants.EARTH_DIAMETER / 2;
 	static ATMOSPHERE_RADIUS = Constants.EARTH_RADIUS + 0.1;
 
+	static MOON_RADIUS = 1.738;
+	static MOON_DISTANCE = Constants.EARTH_DIAMETER * 30;
+
+	static SUN_RADIUS = 6.96;
+	static SUN_DISTANCE = 1496.00;
+
 	static CLOSE_DISTANT_THRESHOLD_RADIUS = Constants.EARTH_RADIUS * 2;
 	static MIN_DISTANCE_RADIUS = Constants.EARTH_RADIUS + 0.05;
 	static MAX_DISTANCE_RADIUS = Constants.EARTH_RADIUS * 10;
-	static DEEP_SPACE_RADIUS = Constants.MAX_DISTANCE_RADIUS * 2;
+	static DEEP_SPACE_RADIUS = Constants.SUN_DISTANCE * 2;
 	static CAMERA_VISIBILITY_RADIUS = Constants.DEEP_SPACE_RADIUS * 2;
 
 }

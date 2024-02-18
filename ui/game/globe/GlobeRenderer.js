@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import {Lensflare, LensflareElement} from "three/examples/jsm/objects/Lensflare";
 import DOMHelper from "wgge/core/helper/DOMHelper";
 import DomRenderer from "wgge/core/renderer/dom/DomRenderer";
 import Rotation from "wgge/core/model/vector/Rotation";
@@ -46,18 +47,8 @@ export default class GlobeRenderer extends DomRenderer {
 		this.camera.layers.enable(Constants.LAYER_CLOSE);
 		this.camera.layers.enable(Constants.LAYER_DISTANT);
 
-		this.ambientLight = new THREE.AmbientLight(0xe0e0e0);
+		this.ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
 		this.scene.add(this.ambientLight);
-
-		this.directLight = new THREE.DirectionalLight( 0xe0e0e0, 1);
-		this.directLight.position.set( 0, 10, -10 );
-		this.scene.add(this.directLight);
-
-		this.deepSpaceMesh = new THREE.Mesh(
-			new THREE.SphereGeometry(Constants.DEEP_SPACE_RADIUS, 16, 16, 3/2 * Math.PI),
-			new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.BackSide})
-		);
-		this.scene.add(this.deepSpaceMesh);
 
 		this.globeMesh = new THREE.Mesh(
 			new THREE.SphereGeometry(Constants.EARTH_RADIUS, 64, 64, 3/2 * Math.PI),
@@ -72,20 +63,24 @@ export default class GlobeRenderer extends DomRenderer {
 		this.atmoMesh.layers.set(Constants.LAYER_DISTANT);
 		this.scene.add(this.atmoMesh);
 
+		this.deepSpaceMesh = new THREE.Mesh(
+			new THREE.SphereGeometry(Constants.DEEP_SPACE_RADIUS, 16, 16, 3/2 * Math.PI),
+			new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.BackSide})
+		);
+		this.scene.add(this.deepSpaceMesh);
+
+		this.moonMesh = new THREE.Mesh(
+			new THREE.SphereGeometry(Constants.MOON_RADIUS, 32, 32),
+			new THREE.MeshLambertMaterial({color: 0xefefef})
+		);
+		this.moonMesh.position.set(Constants.MOON_DISTANCE, 0, 0);
+		this.scene.add(this.moonMesh);
+
 		this.updateCameraPosition();
 		this.updateAtmoVisibility();
 		this.resize();
 
-		this.game.assets.getAsset('img/8k_stars_milky_way.jpg', (img) => {
-			const texture = new THREE.Texture();
-			texture.image = img;
-			texture.needsUpdate = true;
-			texture.repeat.set(1, 1);
-			this.deepSpaceMesh.material.map = texture;
-			this.deepSpaceMesh.material.needsUpdate = true;
-		});
-
-		this.game.assets.getAsset('img/8k_earth_nightmap.jpg', (img) => {
+		this.game.assets.getAsset('img/8k_earth_daymap.jpg', (img) => {
 			const texture = new THREE.Texture();
 			texture.image = img;
 			texture.needsUpdate = true;
@@ -101,6 +96,49 @@ export default class GlobeRenderer extends DomRenderer {
 			texture.repeat.set(1, 1);
 			this.atmoMesh.material.map = texture;
 			this.atmoMesh.material.needsUpdate = true;
+		});
+
+		this.game.assets.getAsset('img/8k_stars_milky_way.jpg', (img) => {
+			const texture = new THREE.Texture();
+			texture.image = img;
+			texture.needsUpdate = true;
+			texture.repeat.set(1, 1);
+			this.deepSpaceMesh.material.map = texture;
+			this.deepSpaceMesh.material.needsUpdate = true;
+		});
+
+		this.game.assets.getAsset('img/2k_moon.jpg', (img) => {
+			const texture = new THREE.Texture();
+			texture.image = img;
+			texture.needsUpdate = true;
+			texture.repeat.set(1, 1);
+			this.moonMesh.material.map = texture;
+			this.moonMesh.material.needsUpdate = true;
+		});
+
+		this.game.assets.getAsset('img/lensflare0.png', (img1) => {
+			this.game.assets.getAsset('img/lensflare3.png', (img2) => {
+				const textureFlare0 = new THREE.Texture();
+				textureFlare0.image = img1;
+				textureFlare0.needsUpdate = true;
+				const textureFlare3 = new THREE.Texture();
+				textureFlare3.image = img2;
+				textureFlare3.needsUpdate = true;
+
+				const light = new THREE.PointLight( 0xffffff, 1, Constants.SUN_DISTANCE, 0 );
+				//light.color.setHSL( h, s, l );
+				light.position.set(0, 0, Constants.SUN_DISTANCE);
+				this.scene.add( light );
+
+				const lensflare = new Lensflare();
+				lensflare.addElement( new LensflareElement( textureFlare0, 150, 0) );
+				lensflare.addElement( new LensflareElement( textureFlare3, 120, 0.3 ) );
+				lensflare.addElement( new LensflareElement( textureFlare3, 70, 0.5 ) );
+				lensflare.addElement( new LensflareElement( textureFlare3, 50, 0.6 ) );
+				lensflare.addElement( new LensflareElement( textureFlare3, 10, 0.7 ) );
+				light.add( lensflare );
+
+			});
 		});
 
 		this.addChild(

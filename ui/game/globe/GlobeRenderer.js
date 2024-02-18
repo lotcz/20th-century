@@ -7,6 +7,7 @@ import GpsUtil from "../util/GpsUtil";
 import CollectionRenderer from "wgge/core/renderer/generic/CollectionRenderer";
 import CityRenderer from "./CityRenderer";
 import Constants from "../util/Constants";
+import ParticleGeneratorRenderer from "../particles/generator/ParticleGeneratorRenderer";
 
 export default class GlobeRenderer extends DomRenderer {
 
@@ -42,7 +43,12 @@ export default class GlobeRenderer extends DomRenderer {
 		this.renderer.setClearColor(0x000000, 0);
 
 		this.scene = new THREE.Scene();
-		this.camera = new THREE.PerspectiveCamera(50,this.game.viewBoxSize.x / this.game.viewBoxSize.y, 0.01, Constants.CAMERA_VISIBILITY_RADIUS);
+		this.camera = new THREE.PerspectiveCamera(
+			50,
+			this.game.viewBoxSize.x / this.game.viewBoxSize.y,
+			0.1,
+			Constants.CAMERA_VISIBILITY_RADIUS
+		);
 		this.camera.layers.enable(Constants.LAYER_DEFAULT);
 		this.camera.layers.enable(Constants.LAYER_CLOSE);
 		this.camera.layers.enable(Constants.LAYER_DISTANT);
@@ -125,20 +131,29 @@ export default class GlobeRenderer extends DomRenderer {
 				textureFlare3.image = img2;
 				textureFlare3.needsUpdate = true;
 
-				const light = new THREE.PointLight( 0xffffff, 1, Constants.SUN_DISTANCE, 0 );
-				//light.color.setHSL( h, s, l );
+				const light = new THREE.PointLight(0xfff0ef, 1, Constants.DEEP_SPACE_RADIUS, 0);
 				light.position.set(0, 0, Constants.SUN_DISTANCE);
 				this.scene.add( light );
 
 				const lensflare = new Lensflare();
-				lensflare.addElement( new LensflareElement( textureFlare0, 150, 0) );
-				lensflare.addElement( new LensflareElement( textureFlare3, 120, 0.3 ) );
-				lensflare.addElement( new LensflareElement( textureFlare3, 70, 0.5 ) );
-				lensflare.addElement( new LensflareElement( textureFlare3, 50, 0.6 ) );
-				lensflare.addElement( new LensflareElement( textureFlare3, 10, 0.7 ) );
-				light.add( lensflare );
+				lensflare.addElement(new LensflareElement(textureFlare0, 120, 0));
+				lensflare.addElement(new LensflareElement(textureFlare3, 100, 0.1));
+				lensflare.addElement(new LensflareElement(textureFlare3, 70, 0.2));
+				lensflare.addElement(new LensflareElement(textureFlare3, 100, 0.3));
+				lensflare.addElement(new LensflareElement(textureFlare3, 70, 0.4));
+				light.add(lensflare);
 
 			});
+		});
+
+		this.ufoMesh = new THREE.Group();
+		const light = new THREE.PointLight(0xfff0ef, 1, 0.01, 0);
+		light.position.set(0, 0,0.001);
+		this.ufoMesh.add(light);
+		this.scene.add(this.ufoMesh);
+
+		this.game.assets.loadModel3d(1, (model) => {
+			this.ufoMesh.add(model);
 		});
 
 		this.addChild(
@@ -148,6 +163,8 @@ export default class GlobeRenderer extends DomRenderer {
 				(m) => new CityRenderer(this.game, m, this.scene)
 			)
 		);
+
+		this.addChild(new ParticleGeneratorRenderer(this.game, this.model.ufoExhaust, this.scene));
 	}
 
 	deactivateInternal() {
@@ -169,6 +186,9 @@ export default class GlobeRenderer extends DomRenderer {
 		if (this.model.cameraCoordinates.isDirty || this.model.cameraDistance.isDirty) {
 			this.updateCameraPosition();
 		}
+		if (this.model.ufoCoordinates.isDirty || this.model.ufoDistance.isDirty) {
+			this.updateUfoPosition();
+		}
 		if (this.model.atmoCoordinates.isDirty) {
 			this.updateAtmoPosition();
 		}
@@ -182,6 +202,12 @@ export default class GlobeRenderer extends DomRenderer {
 		this.camera.lookAt(0, 0, 0);
 
 		this.deepSpaceMesh.position.set(position.x, position.y, position.z);
+	}
+
+	updateUfoPosition() {
+		const position = GpsUtil.coordsToPosition(this.model.ufoCoordinates, this.model.ufoDistance.get());
+		this.ufoMesh.position.set(position.x, position.y, position.z);
+		this.ufoMesh.lookAt(this.globeMesh.position);
 	}
 
 	updateAtmoPosition() {

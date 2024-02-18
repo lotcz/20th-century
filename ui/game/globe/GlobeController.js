@@ -4,6 +4,7 @@ import HttpHelper from "wgge/core/helper/HttpHelper";
 import CityModel from "./CityModel";
 import Constants from "../util/Constants";
 import NumberHelper from "wgge/core/helper/NumberHelper";
+import ParticleGeneratorController from "../particles/generator/ParticleGeneratorController";
 
 const HALF_CIRCLE = 180;
 const QUARTER_CIRCLE = 90;
@@ -19,6 +20,8 @@ export default class GlobeController extends ControllerBase {
 		super(game, model);
 
 		this.model = model;
+
+		this.addChild(new ParticleGeneratorController(this.game, this.model.ufoExhaust));
 
 		this.addAutoEvent(
 			this.game.controls,
@@ -68,6 +71,16 @@ export default class GlobeController extends ControllerBase {
 //		alat.increase((delta / 30000) * halfCircle);
 //		if (alat.get() > halfCircle) alat.increase(- 2 * halfCircle);
 		this.model.atmoCoordinates.set(alon.get(), alat.get());
+
+		// UFO
+		const ulon = new FloatValue(this.model.ufoCoordinates.x);
+		ulon.increase((delta / 5000) * HALF_CIRCLE);
+		if (ulon.get() > HALF_CIRCLE) alon.increase(- 2 * HALF_CIRCLE);
+		const ulat = new FloatValue(this.model.ufoCoordinates.y);
+		//ulat.increase((delta / 30000) * HALF_CIRCLE);
+		//if (ulat.get() > HALF_CIRCLE) ulat.increase(- 2 * HALF_CIRCLE);
+		this.model.ufoCoordinates.set(ulon.get(), ulat.get());
+
 	}
 
 	loadCities() {

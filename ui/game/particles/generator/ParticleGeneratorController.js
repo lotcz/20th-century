@@ -36,11 +36,6 @@ export default class ParticleGeneratorController extends ControllerBase {
 				this.particleTimeout += this.particleMaxTimeout;
 			}
 		}
-		this.model.particles.forEach((p) => {
-			if (p.lifetime.get() < 0) {
-				this.model.particles.remove(p);
-			}
-		})
 	}
 
 	addParticle() {

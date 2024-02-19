@@ -17,8 +17,7 @@ export default class ParticleController extends ControllerBase {
 		const deltaSecs = (delta / 1000);
 		this.model.lifetime.increase(-deltaSecs);
 		if (this.model.lifetime.get() < 0) {
-			console.log('removing');
-			this.model.triggerEvent('remove-me');
+			this.model.removeMyself();
 			return;
 		}
 

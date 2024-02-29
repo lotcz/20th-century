@@ -1,12 +1,11 @@
 import DOMHelper from "wgge/core/helper/DOMHelper";
 import DomRenderer from "wgge/core/renderer/dom/DomRenderer";
-import GlobeRenderer from "../globe/GlobeRenderer";
 import ImageToCanvasRenderer from "wgge/core/renderer/canvas/ImageToCanvasRenderer";
 
-export default class InteriorRenderer extends DomRenderer {
+export default class CockpitRenderer extends DomRenderer {
 
 	/**
-	 * @type InteriorModel
+	 * @type MainModel
 	 */
 	model;
 
@@ -28,12 +27,7 @@ export default class InteriorRenderer extends DomRenderer {
 	activateInternal() {
 		this.container = this.addElement('div', 'container container-host');
 
-		const globe = DOMHelper.createElement(this.container, 'div', 'globe container container-host');
-		const interior = DOMHelper.createElement(this.container, 'div', 'interior container container-host');
-
-		this.addChild(new GlobeRenderer(this.game, this.model.globe, globe));
-
-		this.imageRenderer = new ImageToCanvasRenderer(this.game, this.model.background, interior);
+		this.imageRenderer = new ImageToCanvasRenderer(this.game, this.model.cockpit.background, this.container);
 		this.addChild(this.imageRenderer);
 
 		this.resize();
@@ -49,6 +43,6 @@ export default class InteriorRenderer extends DomRenderer {
 	}
 
 	resize() {
-		this.model.background.size.set(this.game.viewBoxSize);
+		this.model.cockpit.background.size.set(this.game.viewBoxSize);
 	}
 }

@@ -1,5 +1,5 @@
 import GameRenderer from "wgge/game/GameRenderer";
-import InteriorRenderer from "./interior/InteriorRenderer";
+import SaveGameRenderer from "./SaveGameRenderer";
 import NullableNodeRenderer from "wgge/core/renderer/generic/NullableNodeRenderer";
 
 export default class MyGameRenderer extends GameRenderer {
@@ -17,8 +17,8 @@ export default class MyGameRenderer extends GameRenderer {
 		this.addChild(
 			new NullableNodeRenderer(
 				this.game,
-				this.model.interior,
-				(m)=> new InteriorRenderer(this.game, m, this.saveGameLayer)
+				this.model.saveGame,
+				(m)=> new SaveGameRenderer(this.game, m, this.saveGameLayer)
 			)
 		);
 	}

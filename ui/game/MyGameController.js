@@ -2,8 +2,8 @@ import GameController from "wgge/game/GameController";
 import MenuItemModel from "wgge/game/menu/item/MenuItemModel";
 import MenuModel from "wgge/game/menu/MenuModel";
 import NullableNodeController from "wgge/core/controller/NullableNodeController";
-import InteriorController from "./interior/InteriorController";
-import InteriorModel from "./interior/InteriorModel";
+import SaveGameController from "./SaveGameController";
+import SaveGameModel from "./SaveGameModel";
 
 export default class MyGameController extends GameController {
 
@@ -32,8 +32,8 @@ export default class MyGameController extends GameController {
 		this.addChild(
 			new NullableNodeController(
 				this.game,
-				this.model.interior,
-				(m) => new InteriorController(this.game, m)
+				this.model.saveGame,
+				(m) => new SaveGameController(this.game, m)
 			)
 		);
 
@@ -55,7 +55,7 @@ export default class MyGameController extends GameController {
 
 	async loadResourcesFromStorage() {
 		await super.loadResourcesFromStorage();
-		this.model.interior.set(new InteriorModel());
+		this.model.saveGame.set(new SaveGameModel());
 	}
 
 }

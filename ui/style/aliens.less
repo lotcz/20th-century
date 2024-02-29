@@ -1,0 +1,61 @@
+@black: #202020;
+@dark-blue: #10102d;
+@medium-blue: #0e4262;
+@light-blue: #0da4a5;
+
+.normal-text {
+	font-family: "Droid Sans Mono Dotted", monospace;
+	font-size: @font-size-small;
+}
+
+.decor-text {
+	.normal-text();
+
+	font-size: @font-size-medium;
+}
+
+.menu {
+	.normal-text();
+
+	.item {
+		color: @light-blue;
+		&:hover {
+			color: @white;
+		}
+	}
+
+}
+
+.savegame-layer {
+	color: @light-blue;
+}
+
+.alien-panel {
+	position: absolute;
+
+	background-color: @black;
+	border-radius: 10px;
+
+	> div {
+		margin: 5px;
+
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+
+		padding: 15px;
+
+		background-color: @black;
+		border-radius: 20px;
+		border-color: @medium-blue;
+		border-width: 1px;
+		border-style: inset;
+
+		box-shadow: 0px 0px 30px @light-blue inset;
+
+
+	}
+
+}

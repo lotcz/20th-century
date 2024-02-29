@@ -1,2 +1,1 @@
-npm install
-npm run debug
+npm install && npm run debug

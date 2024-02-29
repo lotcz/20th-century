@@ -532,11 +532,17 @@ h4 {
   font-size: 16pt;
   font-size: 10pt;
 }
+.cursor-default {
+  cursor: default;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
 .info-float {
   position: fixed;
   right: 10px;
   top: 10px;
-  background-color: #000000;
+  background-color: #202020;
   color: #e0e0e0;
   padding: 10px;
 }
@@ -580,6 +586,7 @@ h4 {
   background-color: #e0e0e0;
 }
 .main-menu-layer {
+  cursor: default;
   position: fixed;
   top: 0;
   left: 0;
@@ -608,7 +615,28 @@ h4 {
 .main-menu-layer .main-menu .item:hover {
   color: darkred;
 }
+.menu {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -ms-user-select: none;
+  font-family: "Droid Sans Mono Dotted", monospace;
+  font-size: 16pt;
+  font-size: 22pt;
+  text-align: center;
+  color: #5a5a5a;
+}
+.menu .item {
+  cursor: pointer;
+}
+.menu .item:hover {
+  color: #a0a0a0;
+}
 .savegame-layer {
+  cursor: default;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -620,15 +648,59 @@ h4 {
   font-size: 16pt;
   color: #311a0a;
 }
-.main-menu-layer {
-  background-color: #11113a;
+.normal-text {
+  font-family: "Droid Sans Mono Dotted", monospace;
+  font-size: 16pt;
 }
-.main-menu-layer .main-menu {
-  color: #085f92;
+.decor-text {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -ms-user-select: none;
+  font-family: "Droid Sans Mono Dotted", monospace;
+  font-size: 16pt;
+  font-size: 22pt;
 }
-.main-menu-layer .main-menu .item:hover {
+.menu {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -ms-user-select: none;
+  font-family: "Droid Sans Mono Dotted", monospace;
+  font-size: 16pt;
+}
+.menu .item {
+  color: #0da4a5;
+}
+.menu .item:hover {
   color: #e0e0e0;
 }
 .savegame-layer {
   color: #0da4a5;
+}
+.alien-panel {
+  position: absolute;
+  background-color: #202020;
+  border-radius: 10px;
+}
+.alien-panel > div {
+  margin: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding: 15px;
+  background-color: #202020;
+  border-radius: 20px;
+  border-color: #0e4262;
+  border-width: 1px;
+  border-style: inset;
+  box-shadow: 0px 0px 30px #0da4a5 inset;
 }

@@ -1,5 +1,5 @@
 import DomRenderer from "wgge/core/renderer/dom/DomRenderer";
-import MainRenderer from "./interior/main/MainRenderer";
+import MainRenderer from "./main/MainRenderer";
 
 export default class SaveGameRenderer extends DomRenderer {
 
@@ -13,7 +13,7 @@ export default class SaveGameRenderer extends DomRenderer {
 
 		this.model = model;
 
-		this.addChild(new MainRenderer(this.game, this.model.main, this.dom));
+		this.addChild(new MainRenderer(this.game, this.model, this.dom));
 	}
 
 }

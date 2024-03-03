@@ -47,9 +47,8 @@ export default class MyGameController extends GameController {
 
 	showMainMenu() {
 		const menu = new MenuModel('Menu');
-		menu.items.add(new MenuItemModel('Physics', () => this.model.demoType.set('physics')));
-		menu.items.add(new MenuItemModel('Canvas', () => this.model.demoType.set('canvas')));
-		menu.items.add(new MenuItemModel('Submerged', () => this.model.demoType.set('submerged')));
+		menu.items.add(new MenuItemModel('Restart', () => this.model.saveGame.set(new SaveGameModel())));
+		menu.items.add(new MenuItemModel('Continue', () => this.model.menu.set(null)));
 		this.model.menu.set(menu);
 	}
 

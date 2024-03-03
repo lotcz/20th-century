@@ -29,7 +29,7 @@ export default class ParticleGeneratorController extends ControllerBase {
 	}
 
 	updateInternal(delta) {
-		if (this.model.on) {
+		if (this.model.on.get()) {
 			this.particleTimeout -= delta;
 			while (this.particleTimeout < 0) {
 				this.addParticle();

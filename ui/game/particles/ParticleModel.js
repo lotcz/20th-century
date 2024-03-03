@@ -50,12 +50,16 @@ export default class ParticleModel extends ObjectModel {
 
 		this.imageUrl = this.addProperty('imageUrl', new StringValue('img/smoke-white.png'));
 		this.position = this.addProperty('position', new Vector3());
-		this.scale = this.addProperty('scale', new FloatValue(0.25));
+		this.scale = this.addProperty('scale', new FloatValue(1));
 		this.opacity = this.addProperty('opacity', new FloatValue(1));
 		this.movement = this.addProperty('movement', new Vector3());
 		this.lifetime = this.addProperty('lifetime', new FloatValue(1));
 		this.scaleGrowth = this.addProperty('scaleGrowth', new FloatValue(-0.12));
 		this.fadeOutDuration = this.addProperty('fadeOutDuration', new FloatValue(0.3));
+	}
+
+	getResourcesForPreloadInternal() {
+		return [this.imageUrl.get()];
 	}
 
 }

@@ -664,7 +664,36 @@ h4 {
   font-size: 16pt;
   font-size: 22pt;
 }
-.menu {
+.savegame-layer {
+  color: #0da4a5;
+}
+img {
+  max-width: 100%;
+}
+.alien-panel {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -ms-user-select: none;
+  font-family: "Droid Sans Mono Dotted", monospace;
+  font-size: 16pt;
+  position: absolute;
+}
+.alien-panel > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 20px;
+  box-shadow: 0px 0px 30px #0da4a5 inset;
+}
+.alien-panel > div .menu {
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -675,32 +704,24 @@ h4 {
   font-family: "Droid Sans Mono Dotted", monospace;
   font-size: 16pt;
 }
-.menu .item {
+.alien-panel > div .menu .item {
   color: #0da4a5;
 }
-.menu .item:hover {
+.alien-panel > div .menu .item:hover {
   color: #e0e0e0;
 }
-.savegame-layer {
-  color: #0da4a5;
+.alien-panel > div .menu .item.active {
+  text-decoration: underline;
 }
-.alien-panel {
-  position: absolute;
-  background-color: #202020;
-  border-radius: 10px;
+.alien-panel > div .tabs .menu {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
 }
-.alien-panel > div {
-  margin: 5px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  padding: 15px;
-  background-color: #202020;
-  border-radius: 20px;
-  border-color: #0e4262;
-  border-width: 1px;
-  border-style: inset;
-  box-shadow: 0px 0px 30px #0da4a5 inset;
+.alien-panel > div .tabs .menu .item {
+  flex: 1;
+}
+.alien-panel.panel-small > div {
+  box-shadow: 0px 0px 10px #0da4a5 inset;
+  border-radius: 50%;
 }

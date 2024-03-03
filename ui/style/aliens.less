@@ -14,31 +14,20 @@
 	font-size: @font-size-medium;
 }
 
-.menu {
-	.normal-text();
-
-	.item {
-		color: @light-blue;
-		&:hover {
-			color: @white;
-		}
-	}
-
-}
-
 .savegame-layer {
 	color: @light-blue;
 }
 
+img {
+	max-width: 100%;
+}
+
 .alien-panel {
+	.normal-text();
+
 	position: absolute;
 
-	background-color: @black;
-	border-radius: 10px;
-
 	> div {
-		margin: 5px;
-
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -47,15 +36,44 @@
 
 		padding: 15px;
 
-		background-color: @black;
+		background-color: @transparent-black;
 		border-radius: 20px;
-		border-color: @medium-blue;
-		border-width: 1px;
-		border-style: inset;
-
 		box-shadow: 0px 0px 30px @light-blue inset;
 
+		.menu {
+			.normal-text();
 
+			.item {
+				color: @light-blue;
+				&:hover {
+					color: @white;
+				}
+				&.active {
+					text-decoration: underline;
+				}
+			}
+
+		}
+
+		.tabs {
+			.menu {
+				display: flex;
+				flex-direction: row;
+
+				text-align: center;
+
+				.item {
+					flex: 1;
+				}
+
+			}
+		}
 	}
 
+	&.panel-small {
+		> div {
+			box-shadow: 0px 0px 10px @light-blue inset;
+			border-radius: 50%;
+		}
+	}
 }

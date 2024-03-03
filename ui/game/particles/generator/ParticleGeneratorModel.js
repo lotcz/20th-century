@@ -59,7 +59,7 @@ export default class ParticleGeneratorModel extends ObjectModel {
 		super(persistent);
 
 		this.position = this.addProperty('position', new Vector3());
-		this.on = this.addProperty('on', new BoolValue(true));
+		this.on = this.addProperty('on', new BoolValue(false));
 
 		this.particleTemplate = this.addProperty('particleTemplate', new ParticleModel());
 

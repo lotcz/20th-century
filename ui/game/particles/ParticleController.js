@@ -27,6 +27,9 @@ export default class ParticleController extends ControllerBase {
 
 		this.model.position.add(this.model.movement.multiply(deltaSecs));
 		this.model.scale.increase(this.model.scaleGrowth.get() * deltaSecs);
+		if (this.model.scale.get() < 0) {
+			this.model.scale.set(0);
+		}
 	}
 
 }

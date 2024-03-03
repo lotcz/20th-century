@@ -1,15 +1,14 @@
 STATS
 
 - year
-- score
-- knowledge points
+- biology knowledge points
+- history knowledge points
+- materials
 
 GLOBE
 
-- moving on orbital trajectory
 - explore earth to discover places
-- to open a time portal to past, learn about an Event, place and person
-- to future you can travel instantly by speeding up time
+- to open a time portal to past, learn about an event, place and person
 
 KNOWLEDGEBASE
 
@@ -21,13 +20,13 @@ KNOWLEDGEBASE
 RESEARCH
 
 - probe abducted people to learn about events, places and people
-- make cattle or human autopsy to KP
+- make cattle or human autopsy to gain bilogoy
 
+MANUFACTURE
 - develop better tech:
-  - light range
-  - radar range (globe and action)
-  - battery capacity
-  - crop signs
+  - scanner battery capacity
+  - scanner range 
+  - crop signs level (requires knowledge points)  
   - cattle butcherer radius
   - abductor radius
   - interrogator capacity
@@ -35,11 +34,11 @@ RESEARCH
 
 ACTION
 
-- only allowed at night
-- gather score
+- gather materials
 - abduct people or cattle to probe them later
-- leave crop signs to gain score (+100..1000)
-- butcher cattle to gain score (+10)
+- leave crop signs to gain biology knowledge
+- butcher cattle to gain biology knowledge
+- return abducted people
 
 - types
   - city

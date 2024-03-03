@@ -1,5 +1,5 @@
 import ControllerBase from "wgge/core/controller/ControllerBase";
-import MainController from "./interior/main/MainController";
+import MainController from "./main/MainController";
 
 export default class SaveGameController extends ControllerBase {
 
@@ -13,7 +13,7 @@ export default class SaveGameController extends ControllerBase {
 
 		this.model = model;
 
-		this.addChild(new MainController(this.game, this.model.main));
+		this.addChild(new MainController(this.game, this.model));
 	}
 
 }

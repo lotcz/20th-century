@@ -6,6 +6,8 @@ import DirtyValueRenderer from "wgge/core/renderer/dom/DirtyValueRenderer";
 import Vector2Renderer from "wgge/core/renderer/dom/Vector2Renderer";
 import Rotation from "wgge/core/model/vector/Rotation";
 import WorldConstants from "../util/WorldConstants";
+import NumberHelper from "wgge/core/helper/NumberHelper";
+import NullableNodeRenderer from "wgge/core/renderer/generic/NullableNodeRenderer";
 
 export default class MainInfoRenderer extends DomRenderer {
 
@@ -34,13 +36,32 @@ export default class MainInfoRenderer extends DomRenderer {
 
 		this.container = DOMHelper.createElement(this.wrapper, 'div', 'center');
 
+		DOMHelper.createElement(this.container, 'div', 'small-text', 'Year')
+		this.addChild(
+			new DirtyValueRenderer(
+				this.game,
+				this.model.year,
+				DOMHelper.createElement(this.container, 'div')
+			)
+		);
+
 		DOMHelper.createElement(this.container, 'div', 'small-text', 'Altitude')
 		this.addChild(
 			new DirtyValueRenderer(
 				this.game,
-				this.model.main.globe.ufoAltitude,
+				this.model.main.globe.ufo.ufoAltitude,
 				DOMHelper.createElement(this.container, 'div'),
 				(alt) => `${Math.round((alt - WorldConstants.EARTH_RADIUS) * 1000)}km`
+			)
+		);
+
+		DOMHelper.createElement(this.container, 'div', 'small-text', 'Speed')
+		this.addChild(
+			new DirtyValueRenderer(
+				this.game,
+				this.model.main.globe.ufo.ufoSpeed,
+				DOMHelper.createElement(this.container, 'div'),
+				(speed) => `${NumberHelper.round(speed * 1000, -2)}km/s`
 			)
 		);
 
@@ -48,9 +69,24 @@ export default class MainInfoRenderer extends DomRenderer {
 		this.addChild(
 			new Vector2Renderer(
 				this.game,
-				this.model.main.globe.ufoCoordinates,
+				this.model.main.globe.ufo.ufoCoordinates,
 				DOMHelper.createElement(this.container, 'div'),
 				(p) => `${Math.round(Rotation.radToDeg(p.y))}° ${Math.round(Rotation.radToDeg(p.x))}°`
+			)
+		);
+
+		DOMHelper.createElement(this.container, 'div', 'small-text', 'Cursor')
+		const cursorPos = DOMHelper.createElement(this.container, 'div');
+		this.addChild(
+			new NullableNodeRenderer(
+				this.game,
+				this.model.main.globe.cursorAtGlobe,
+				(m) => new Vector2Renderer(
+					this.game,
+					m,
+					cursorPos,
+					(p) => `${Math.round(Rotation.radToDeg(p.y))}° ${Math.round(Rotation.radToDeg(p.x))}°`
+				)
 			)
 		);
 
@@ -84,7 +120,7 @@ export default class MainInfoRenderer extends DomRenderer {
 		this.addChild(
 			new MenuRenderer(
 				this.game,
-				this.model.main.infoMenu,
+				this.model.main.mainInfoPanel.menu,
 				DOMHelper.createElement(this.container, 'div')
 			)
 		);

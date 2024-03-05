@@ -1,6 +1,8 @@
 import DOMHelper from "wgge/core/helper/DOMHelper";
 import DomRenderer from "wgge/core/renderer/dom/DomRenderer";
-import StrategicPanelRenderer from "./StrategicPanelRenderer";
+import CruisePanelRenderer from "./cruise/CruisePanelRenderer";
+import SwitchRenderer from "wgge/core/renderer/generic/SwitchRenderer";
+import ScannerPanelRenderer from "./scanner/ScannerPanelRenderer";
 
 export default class StrategicRenderer extends DomRenderer {
 
@@ -18,9 +20,21 @@ export default class StrategicRenderer extends DomRenderer {
 
 	activateInternal() {
 		this.container = this.addElement('div', 'container container-host');
+		this.panel = DOMHelper.createElement(this.container, 'div', 'container container-host');
 
 		this.addChild(
-			new StrategicPanelRenderer(
+			new SwitchRenderer(
+				this.game,
+				this.model,
+				this.model.main.strategic.selectedStrategicPanel,
+				{
+					'scanner': () => new ScannerPanelRenderer(this.game, this.model, this.panel)
+				}
+			)
+		);
+
+		this.addChild(
+			new CruisePanelRenderer(
 				this.game,
 				this.model,
 				this.container

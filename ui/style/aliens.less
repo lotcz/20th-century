@@ -20,6 +20,22 @@
 
 img {
 	max-width: 100%;
+
+	&.icon, &.icon-large, &.icon-small {
+		margin: 10px;
+		width: 100px;
+		border-radius: 15px;
+		box-shadow: 0 0 20px @light-blue;
+	}
+
+	&.icon-large {
+		width: 150px;
+	}
+
+	&.icon-small {
+		width: 75px;
+	}
+
 }
 
 .alien-panel {
@@ -67,6 +83,10 @@ img {
 				}
 
 			}
+		}
+
+		.border {
+			border: 1px solid @light-blue;
 		}
 	}
 

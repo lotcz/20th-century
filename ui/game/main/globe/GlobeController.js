@@ -2,9 +2,7 @@ import ControllerBase from "wgge/core/controller/ControllerBase";
 import FloatValue from "wgge/core/model/value/FloatValue";
 import HttpHelper from "wgge/core/helper/HttpHelper";
 import CityModel from "./CityModel";
-import WorldConstants from "../../util/WorldConstants";
-import NumberHelper from "wgge/core/helper/NumberHelper";
-import ParticleGeneratorController from "../../particles/generator/ParticleGeneratorController";
+import UfoController from "./ufo/UfoController";
 
 const HALF_CIRCLE = 180;
 const QUARTER_CIRCLE = 90;
@@ -21,25 +19,8 @@ export default class GlobeController extends ControllerBase {
 
 		this.model = model;
 
-		this.addChild(new ParticleGeneratorController(this.game, this.model.ufoExhaust));
+		this.addChild(new UfoController(this.game, this.model.ufo));
 
-		this.addAutoEvent(
-			this.game.controls,
-			'zoom',
-			(z) => this.onZoom(z)
-		);
-
-		this.addAutoEvent(
-			this.game.controls,
-			'key-up',
-			(k) => this.onKeyUp(k)
-		);
-
-		this.addAutoEvent(
-			this.game.controls,
-			'key-down',
-			(k) => this.onKeyDown(k)
-		);
 
 	}
 
@@ -103,45 +84,5 @@ export default class GlobeController extends ControllerBase {
 			);
 	}
 
-	onZoom(z) {
-		this.model.cameraDistance.increase(z > 0 ? 1 : -1);
-		this.model.cameraDistance.set(
-			NumberHelper.between(
-				WorldConstants.MIN_DISTANCE_RADIUS,
-				WorldConstants.MAX_DISTANCE_RADIUS,
-				this.model.cameraDistance.get()
-			)
-		);
-	}
 
-	onKeyDown(k) {
-		const ROTATION_SPEED = 0.3;
-		switch (k) {
-			case 65:
-				this.model.rotating.set(-ROTATION_SPEED, this.model.rotating.y);
-				break;
-			case 68:
-				this.model.rotating.set(ROTATION_SPEED, this.model.rotating.y);
-				break;
-			case 87:
-				this.model.rotating.set(this.model.rotating.x, ROTATION_SPEED);
-				break;
-			case 83:
-				this.model.rotating.set(this.model.rotating.x, -ROTATION_SPEED);
-				break;
-		}
-	}
-
-	onKeyUp(k) {
-		switch (k) {
-			case 65:
-			case 68:
-				this.model.rotating.set(0, this.model.rotating.y);
-				break;
-			case 87:
-			case 83:
-				this.model.rotating.set(this.model.rotating.x, 0);
-				break;
-		}
-	}
 }

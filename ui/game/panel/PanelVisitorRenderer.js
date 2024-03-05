@@ -1,7 +1,7 @@
 import DomRenderer from "wgge/core/renderer/dom/DomRenderer";
 import ProgressValue from "wgge/core/animation/ProgressValue";
-import Vector2 from "wgge/core/model/vector/Vector2";
 import WorldConstants from "../util/WorldConstants";
+import Vector2 from "wgge/core/model/vector/Vector2";
 
 export default class PanelVisitorRenderer extends DomRenderer {
 
@@ -25,18 +25,19 @@ export default class PanelVisitorRenderer extends DomRenderer {
 	}
 
 	renderInternal() {
+		const align = this.model.alignment;
 		const rangeEnd = this.game.viewBoxSize.subtract(this.model.size.add(WorldConstants.PANEL_MARGIN));
 		const rangeStart = rangeEnd.add(WorldConstants.PANEL_MARGIN).multiply(0.5);
 
 		const progressX = new ProgressValue(rangeStart.x, rangeEnd.x);
 		const progressY = new ProgressValue(rangeStart.y, rangeEnd.y);
-		const panelCornerPosition = new Vector2(
-			progressX.get(this.model.alignment.x),
-			progressY.get(this.model.alignment.y)
-		);
+		const position = new Vector2(
+			progressX.get(align.x),
+			progressY.get(align.y)
+		).add(this.model.offset);
 
-		this.dom.style.left = `${panelCornerPosition.x}px`;
-		this.dom.style.top = `${panelCornerPosition.y}px`;
+		this.dom.style.left = `${position.x}px`;
+		this.dom.style.top = `${position.y}px`;
 		this.dom.style.width = `${this.model.size.x}px`;
 		this.dom.style.height = `${this.model.size.y}px`;
 	}

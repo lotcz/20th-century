@@ -670,6 +670,20 @@ h4 {
 img {
   max-width: 100%;
 }
+img.icon,
+img.icon-large,
+img.icon-small {
+  margin: 10px;
+  width: 100px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px #0da4a5;
+}
+img.icon-large {
+  width: 150px;
+}
+img.icon-small {
+  width: 75px;
+}
 .alien-panel {
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -720,6 +734,9 @@ img {
 }
 .alien-panel > div .tabs .menu .item {
   flex: 1;
+}
+.alien-panel > div .border {
+  border: 1px solid #0da4a5;
 }
 .alien-panel.panel-small > div {
   box-shadow: 0px 0px 10px #0da4a5 inset;

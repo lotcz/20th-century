@@ -1,6 +1,7 @@
 import ControllerBase from "wgge/core/controller/ControllerBase";
 import CollectionController from "wgge/core/controller/CollectionController";
 import ParticleController from "../ParticleController";
+import Vector3 from "wgge/core/model/vector/Vector3";
 
 export default class ParticleGeneratorController extends ControllerBase {
 
@@ -41,10 +42,27 @@ export default class ParticleGeneratorController extends ControllerBase {
 	addParticle() {
 		const particle = this.model.particleTemplate.clone();
 
-		particle.position.set(this.model.position.add(this.model.particlePositionSpread.multiply(-0.5 + Math.random())));
+		particle.position.set(
+			this.model.position.add(
+				new Vector3(
+					this.model.particlePositionSpread.x * (-0.5 + Math.random()),
+					this.model.particlePositionSpread.y * (-0.5 + Math.random()),
+					this.model.particlePositionSpread.z * (-0.5 + Math.random())
+				)
+			)
+		);
+
 		particle.scale.set(this.model.particleTemplate.scale.get() + (this.model.particleScaleSpread.get() * (-0.5 + Math.random())));
 		particle.lifetime.set(this.model.particleTemplate.lifetime.get() + (this.model.particleLifetimeSpread.get() * (-0.5 + Math.random())))
-		particle.movement.set(this.model.particleTemplate.movement.add(this.model.particleMovementSpread.multiply(-0.5 + Math.random())));
+		particle.movement.set(
+			this.model.particleTemplate.movement.add(
+				new Vector3(
+					this.model.particleMovementSpread.x * (-0.5 + Math.random()),
+					this.model.particleMovementSpread.y * (-0.5 + Math.random()),
+					this.model.particleMovementSpread.z * (-0.5 + Math.random())
+				)
+			)
+		);
 
 		this.model.particles.add(particle);
 	}

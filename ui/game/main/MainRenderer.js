@@ -1,12 +1,10 @@
 import DOMHelper from "wgge/core/helper/DOMHelper";
 import DomRenderer from "wgge/core/renderer/dom/DomRenderer";
 import GlobeRenderer from "./globe/GlobeRenderer";
-import ScannerRenderer from "./scanner/ScannerRenderer";
-import ConditionalNodeRenderer from "wgge/core/renderer/generic/ConditionalNodeRenderer";
 import StrategicRenderer from "./strategic/StrategicRenderer";
-import {INTERIOR_TYPE_SCANNER} from "./MainModel";
 import MainInfoRenderer from "./MainInfoRenderer";
-import YearRenderer from "./YearRenderer";
+import ResearchRenderer from "./research/ResearchRenderer";
+import SwitchRenderer from "wgge/core/renderer/generic/SwitchRenderer";
 
 export default class MainRenderer extends DomRenderer {
 
@@ -32,12 +30,14 @@ export default class MainRenderer extends DomRenderer {
 
 		const interior = DOMHelper.createElement(this.container, 'div', 'interior container container-host');
 		this.addChild(
-			new ConditionalNodeRenderer(
+			new SwitchRenderer(
 				this.game,
+				this.model,
 				this.model.main.interiorType,
-				() => this.model.main.interiorType.equalsTo(INTERIOR_TYPE_SCANNER),
-				() => new ScannerRenderer(this.game, this.model, interior),
-				() => new StrategicRenderer(this.game, this.model, interior)
+				{
+					'strategic': () => new StrategicRenderer(this.game, this.model, interior),
+					'research': () => new ResearchRenderer(this.game, this.model, interior)
+				}
 			)
 		);
 
@@ -49,19 +49,13 @@ export default class MainRenderer extends DomRenderer {
 			)
 		);
 
-		this.addChild(
-			new YearRenderer(
-				this.game,
-				this.model,
-				this.container
-			)
-		);
-
 	}
 
 	deactivateInternal() {
+		this.model.triggerEvent('destroy-cache');
 		this.resetChildren();
 		DOMHelper.destroyElement(this.canvas);
+
 	}
 
 }

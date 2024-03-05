@@ -1,8 +1,8 @@
 import DOMHelper from "wgge/core/helper/DOMHelper";
 import DomRenderer from "wgge/core/renderer/dom/DomRenderer";
-import PanelVisitorRenderer from "../../panel/PanelVisitorRenderer";
+import PanelVisitorRenderer from "../../../panel/PanelVisitorRenderer";
 import MenuRenderer from "wgge/game/menu/MenuRenderer";
-import ScannerViewRenderer from "./ScannerViewRenderer";
+import ScannerViewRenderer from "./view/ScannerViewRenderer";
 
 export default class ScannerPanelRenderer extends DomRenderer {
 
@@ -24,7 +24,7 @@ export default class ScannerPanelRenderer extends DomRenderer {
 		this.addChild(
 			new PanelVisitorRenderer(
 				this.game,
-				this.model.main.scanner.scannerPanel,
+				this.model.main.strategic.scannerPanel,
 				this.wrapper
 			)
 		);
@@ -37,7 +37,7 @@ export default class ScannerPanelRenderer extends DomRenderer {
 		this.addChild(
 			new MenuRenderer(
 				this.game,
-				this.model.main.scanner.scannerMenu,
+				this.model.main.strategic.scannerPanel.menu,
 				DOMHelper.createElement(this.panelTop, 'div', 'scanner-menu')
 			)
 		);

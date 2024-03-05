@@ -31,16 +31,19 @@ export default class ParticleModel extends ObjectModel {
 	movement;
 
 	/**
+	 * Remaining lifetime in seconds
 	 * @type FloatValue
 	 */
 	lifetime;
 
 	/**
+	 * Per second
 	 * @type FloatValue
 	 */
 	scaleGrowth;
 
 	/**
+	 * In seconds
 	 * @type FloatValue
 	 */
 	fadeOutDuration;

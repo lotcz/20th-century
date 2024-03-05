@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import ThreeRenderer from "../util/ThreeRenderer";
+import ThreeRenderer from "wgge/core/renderer/three/ThreeRenderer";
 
 export default class ParticleRenderer extends ThreeRenderer {
 
@@ -26,6 +26,7 @@ export default class ParticleRenderer extends ThreeRenderer {
 				const material = new THREE.SpriteMaterial({map: texture});
 				this.sprite = new THREE.Sprite(material);
 				this.scene.add(this.sprite);
+				this.renderInternal();
 			}
 		);
 	}

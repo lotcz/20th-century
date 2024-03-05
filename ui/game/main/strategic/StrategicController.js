@@ -6,12 +6,16 @@ import ArrayHelper from "wgge/core/helper/ArrayHelper";
 import Rotation from "wgge/core/model/vector/Rotation";
 import AnimationFloatController from "wgge/core/controller/AnimationFloatController";
 import WorldConstants from "../../util/WorldConstants";
-import {INTERIOR_TYPE_SCANNER} from "../MainModel";
+import NumberHelper from "wgge/core/helper/NumberHelper";
+import {EVENT_LEFT_CLICK} from "wgge/game/controls/ControlsModel";
+import SwitchController from "wgge/core/renderer/generic/SwitchController";
+import ScannerPanelController from "./scanner/ScannerPanelController";
+import {INTERIOR_TYPE_RESEARCH} from "../MainModel";
 
 export default class StrategicController extends ControllerBase {
 
 	/**
-	 * @type MainModel
+	 * @type SaveGameModel
 	 */
 	model;
 
@@ -28,89 +32,126 @@ export default class StrategicController extends ControllerBase {
 		this.coordinatesBound = false;
 		this.altitudeBound = false;
 
+		this.lastMouseCoordinates = null;
+
+		this.addChild(
+			new SwitchController(
+				this.game,
+				this.model,
+				this.model.main.strategic.selectedStrategicPanel,
+				{
+					'scanner': () => new ScannerPanelController(this.game, this.model)
+				}
+			)
+		);
+
 		this.addAutoEvent(
-			this.model.globe.cities,
+			this.game.controls,
+			'zoom',
+			(z) => this.onZoom(z)
+		);
+
+		this.addAutoEvent(
+			this.game.controls.mouseCoordinates,
+			'change',
+			() => this.onMouseMove()
+		);
+
+		this.addAutoEvent(
+			this.game.controls.mouseDownLeft,
+			'change',
+			() => this.onMouseLeft()
+		);
+
+		this.addAutoEvent(
+			this.model.main.globe.cities,
 			'change',
 			() => this.changeTargetCity(),
 			true
 		);
 
 		this.addAutoEvent(
-			this.model.strategic.cameraFollowing,
+			this.model.main.globe.cursorAtCity,
+			'change',
+			() => this.cursorCityChanged(),
+			true
+		);
+
+		this.addAutoEvent(
+			this.model.main.strategic.cameraFollowing,
 			'change',
 			() => this.updateCameraFollowing(),
 			true
 		);
 
 		this.addAutoEvent(
-			this.model.globe.ufoCoordinates,
+			this.model.main.globe.ufo.ufoCoordinates,
 			'change',
 			() => this.followCoordinates()
 		);
 
 		this.addAutoEvent(
-			this.model.globe.ufoAltitude,
+			this.model.main.globe.ufo.ufoAltitude,
 			'change',
 			() => this.followAltitude()
 		);
 
 		this.addAutoEvent(
-			this.model.globe,
+			this.model.main.globe,
 			'change',
 			() => this.followAltitude()
 		);
 
 		this.addAutoEvent(
-			this.model.scanner.scannerPanel.size,
-			'change',
-			() => {
-				const borders = WorldConstants.PANEL_PADDING.multiply(2);
-				const space = new Vector2(0, 50);
-				const size = this.model.strategic.strategicPanel.size.subtract(borders).subtract(space);
-				this.model.scanner.scannerViewSize.set(size);
-			},
-			true
+			this.game.controls,
+			EVENT_LEFT_CLICK,
+			() => this.onClick()
 		);
 
 	}
 
 	activateInternal() {
-		const exploreMenu = this.model.strategic.cruiseExploreMenu;
+		this.model.main.mainInfoPanel.menu.items.reset();
+		this.model.main.mainInfoPanel.menu.items.add(new MenuItemModel('Research', () => this.model.main.interiorType.set(INTERIOR_TYPE_RESEARCH)));
+
+		const exploreMenu = this.model.main.strategic.cruiseExploreMenu;
 		exploreMenu.items.reset();
 		exploreMenu.items.add(new MenuItemModel('NORTH', () => this.moveBy(new Vector2(0, 0.1))));
 		exploreMenu.items.add(new MenuItemModel('SOUTH', () => this.moveBy(new Vector2(0, -0.1))));
 		exploreMenu.items.add(new MenuItemModel('EAST', () => this.moveBy(new Vector2(0.1, 0))));
 		exploreMenu.items.add(new MenuItemModel('WEST', () => this.moveBy(new Vector2(-0.1, 0))));
 
-
-		const altMenu = this.model.strategic.cruiseAltitudeMenu;
+		const altMenu = this.model.main.strategic.cruiseAltitudeMenu;
 		altMenu.items.reset();
 		altMenu.items.add(new MenuItemModel('UP', () => this.changeAltitude(0.5)));
 		altMenu.items.add(new MenuItemModel('DOWN', () => this.changeAltitude(-0.5)));
 		this.followMenuItem = altMenu.items.add(new MenuItemModel('Follow', () => this.triggerFollow()));
 
-		const cityMenu = this.model.strategic.cruiseCityMenu;
+		const cityMenu = this.model.main.strategic.cruiseCityMenu;
 		cityMenu.items.reset();
 
-		const scannerMenu = this.model.strategic.scannerMenu;
+		const scannerMenu = this.model.main.strategic.toggleScannerMenu;
 		scannerMenu.items.reset();
-		scannerMenu.items.add(new MenuItemModel('Scanner', () => this.model.interiorType.set(INTERIOR_TYPE_SCANNER)));
+		scannerMenu.items.add(new MenuItemModel('Scanner', () => {
+			this.model.main.strategic.selectedStrategicPanel.set(
+				this.model.main.strategic.selectedStrategicPanel.equalsTo('scanner') ? 'none' : 'scanner')
+		}));
 	}
 
 	triggerFollow() {
-		this.model.strategic.cameraFollowing.invert();
+		this.model.main.strategic.cameraFollowing.invert();
 	}
 
 	updateCameraFollowing() {
-		const following = this.model.strategic.cameraFollowing.get();
+		const following = this.model.main.strategic.cameraFollowing.get();
 		this.followMenuItem.isActive.set(following);
 		this.updateCameraFollowingCoordinates(following);
 		this.updateCameraFollowingAltitude(following);
 	}
 
 	followCoordinates() {
-		if (this.model.strategic.cameraFollowing.get() && this.coordinatesBound) {
-			this.model.globe.cameraCoordinates.set(this.model.globe.ufoCoordinates);
+		if (this.model.main.strategic.cameraFollowing.get() && this.coordinatesBound) {
+			this.model.main.globe.cameraCoordinates.set(this.model.main.globe.ufo.ufoCoordinates);
 		}
 	}
 
@@ -122,8 +163,8 @@ export default class StrategicController extends ControllerBase {
 			return;
 		}
 
-		const target = this.model.globe.ufoCoordinates;
-		const distance = this.model.globe.cameraCoordinates.subtract(target).size();
+		const target = this.model.main.globe.ufo.ufoCoordinates;
+		const distance = this.model.main.globe.cameraCoordinates.subtract(target).size();
 
 		if (distance <= 0.02 || this.coordinatesBound) {
 			this.coordinatesBound = true;
@@ -135,7 +176,7 @@ export default class StrategicController extends ControllerBase {
 		this.cameraAnimation = this.addChild(
 			new AnimationRotationVector2Controller(
 				this.game,
-				this.model.globe.cameraCoordinates,
+				this.model.main.globe.cameraCoordinates,
 				target,
 				duration * 1000
 			).onFinished(() => {
@@ -146,15 +187,15 @@ export default class StrategicController extends ControllerBase {
 	}
 
 	findRandomCity() {
-		const len = this.model.globe.cities.count();
+		const len = this.model.main.globe.cities.count();
 		if (len === 0) return null;
-		return this.model.globe.cities.get(ArrayHelper.randomIndex(len));
+		return this.model.main.globe.cities.get(ArrayHelper.randomIndex(len));
 	}
 
 	changeTargetCity() {
 		const city = this.findRandomCity();
 		if (city) {
-			const menu = this.model.strategic.cruiseCityMenu;
+			const menu = this.model.main.strategic.cruiseCityMenu;
 			if (this.cityMenuItem) {
 				menu.items.remove(this.cityMenuItem);
 			}
@@ -163,7 +204,7 @@ export default class StrategicController extends ControllerBase {
 	}
 
 	moveBy(diff) {
-		this.cruiseTo(this.model.globe.ufoCoordinates.add(diff));
+		this.cruiseTo(this.model.main.globe.ufo.ufoCoordinates.add(diff));
 	}
 
 	cruiseToCity(city) {
@@ -180,19 +221,17 @@ export default class StrategicController extends ControllerBase {
 			this.removeChild(this.cruisingAnimation);
 		}
 		const SPEED = 0.1;
-		const distance = this.model.globe.ufoCoordinates.subtract(target).size();
+		const distance = this.model.main.globe.ufo.ufoCoordinates.subtract(target).size();
 		if (distance <= 0) return;
-		this.model.globe.ufoExhaust.on.set(true);
 		const duration = distance / SPEED;
 		this.cruisingAnimation = this.addChild(
 			new AnimationRotationVector2Controller(
 				this.game,
-				this.model.globe.ufoCoordinates,
+				this.model.main.globe.ufo.ufoCoordinates,
 				target,
 				duration * 1000
 			).onFinished(() => {
 				this.cruisingAnimation = null;
-				this.model.globe.ufoExhaust.on.set(false);
 				this.changeTargetCity();
 			})
 		);
@@ -200,7 +239,7 @@ export default class StrategicController extends ControllerBase {
 	}
 
 	changeAltitude(diff) {
-		this.altitudeTo(this.model.globe.ufoAltitude.get() + diff);
+		this.altitudeTo(this.model.main.globe.ufo.ufoAltitude.get() + diff);
 	}
 
 	altitudeTo(target) {
@@ -209,13 +248,13 @@ export default class StrategicController extends ControllerBase {
 		}
 		target = Math.max(WorldConstants.UFO_MIN_ALTITUDE, target);
 		const SPEED = 1;
-		const distance = Math.abs(this.model.globe.ufoAltitude.get() - target);
+		const distance = Math.abs(this.model.main.globe.ufo.ufoAltitude.get() - target);
 		if (distance <= 0) return;
 		const duration = distance / SPEED;
 		this.altitudeAnimation = this.addChild(
 			new AnimationFloatController(
 				this.game,
-				this.model.globe.ufoAltitude,
+				this.model.main.globe.ufo.ufoAltitude,
 				target,
 				duration * 1000
 			).onFinished(() => this.altitudeAnimation = null)
@@ -224,12 +263,12 @@ export default class StrategicController extends ControllerBase {
 	}
 
 	getCameraAltitude() {
-		return this.model.globe.ufoAltitude.get() + WorldConstants.UFO_CAMERA_DISTANCE;
+		return this.model.main.globe.ufo.ufoAltitude.get() + WorldConstants.UFO_CAMERA_DISTANCE;
 	}
 
 	followAltitude() {
-		if (this.model.strategic.cameraFollowing.get() && this.altitudeBound) {
-			this.model.globe.cameraDistance.set(this.getCameraAltitude());
+		if (this.model.main.strategic.cameraFollowing.get() && this.altitudeBound) {
+			this.model.main.globe.cameraDistance.set(this.getCameraAltitude());
 		}
 	}
 
@@ -242,7 +281,7 @@ export default class StrategicController extends ControllerBase {
 		}
 
 		const target = this.getCameraAltitude();
-		const distance = Math.abs(this.model.globe.cameraDistance.get() - target);
+		const distance = Math.abs(this.model.main.globe.cameraDistance.get() - target);
 
 		if (distance <= 0.02 || this.altitudeBound) {
 			this.altitudeBound = true;
@@ -251,16 +290,76 @@ export default class StrategicController extends ControllerBase {
 
 		const SPEED = distance < 1 ? 1 : 2;
 		const duration = distance / SPEED;
-		this.cameraAnimation = this.addChild(
+		this.altitudeAnimation = this.addChild(
 			new AnimationFloatController(
 				this.game,
-				this.model.globe.cameraDistance,
+				this.model.main.globe.cameraDistance,
 				target,
 				duration * 1000
 			).onFinished(() => {
 				this.updateCameraFollowing();
-				this.cameraAnimation = null;
+				this.altitudeAnimation = null;
 			})
 		);
+	}
+
+	onZoom(z) {
+		this.model.main.strategic.cameraFollowing.set(false);
+		this.model.main.globe.cameraDistance.increase(z > 0 ? 1 : -1);
+		this.model.main.globe.cameraDistance.set(
+			NumberHelper.between(
+				WorldConstants.MIN_DISTANCE_RADIUS,
+				WorldConstants.MAX_DISTANCE_RADIUS,
+				this.model.main.globe.cameraDistance.get()
+			)
+		);
+	}
+
+	onMouseMove() {
+		if (this.game.controls.mouseDownLeft.get()) {
+			if (this.lastMouseCoordinates) {
+				this.model.main.strategic.cameraFollowing.set(false);
+				const ROTATION_SPEED = 0.002;
+				const mouseDiff = this.game.controls.mouseCoordinates.subtract(this.lastMouseCoordinates);
+				const rotationDiff = mouseDiff.multiply(ROTATION_SPEED);
+				rotationDiff.set(-rotationDiff.x, rotationDiff.y);
+				const rotation = this.model.main.globe.cameraCoordinates.add(rotationDiff);
+				this.model.main.globe.cameraCoordinates.set(
+					new Rotation(rotation.x).get(),
+					NumberHelper.between(-Math.PI / 2, Math.PI / 2, rotation.y)
+				);
+			}
+			this.lastMouseCoordinates = this.game.controls.mouseCoordinates.clone();
+		}
+	}
+
+	onMouseLeft() {
+		if (this.game.controls.mouseDownLeft.get()) {
+			this.lastMouseCoordinates = this.game.controls.mouseCoordinates;
+		} else {
+			this.lastMouseCoordinates = null;
+		}
+	}
+
+	cursorCityChanged() {
+		if (this.cursorCityMenuItem) {
+			this.model.main.strategic.cruiseCityMenu.items.remove(this.cursorCityMenuItem);
+		}
+		if (this.model.main.globe.cursorAtCity.isSet()) {
+			const city = this.model.main.globe.cursorAtCity.get();
+			this.cursorCityMenuItem = this.model.main.strategic.cruiseCityMenu.items.add(
+				new MenuItemModel(city.name.get(), () => this.cruiseToCity(city))
+			)
+		}
+	}
+
+	onClick() {
+		if (this.model.main.globe.cursorAtCity.isSet()) {
+			this.cruiseToCity(this.model.main.globe.cursorAtCity.get());
+			return;
+		}
+		if (this.model.main.globe.cursorAtGlobe.isSet()) {
+			this.cruiseTo(this.model.main.globe.cursorAtGlobe.get());
+		}
 	}
 }

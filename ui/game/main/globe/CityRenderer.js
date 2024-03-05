@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import GpsUtil from "../../util/GpsUtil";
 import WorldConstants from "../../util/WorldConstants";
-import ThreeRenderer from "../../util/ThreeRenderer";
+import ThreeRenderer from "wgge/core/renderer/three/ThreeRenderer";
 
 export default class CityRenderer extends ThreeRenderer {
 
@@ -22,8 +22,9 @@ export default class CityRenderer extends ThreeRenderer {
 			new THREE.SphereGeometry(0.02, 8, 8),
 			new THREE.MeshBasicMaterial({color: 0x2dc4c5})
 		);
-		this.cityMesh.layers.set(WorldConstants.LAYER_CLOSE);
-		this.cityMesh.raycastCity = this;
+		this.cityMesh.layers.set(WorldConstants.LAYER_CITIES);
+		this.cityMesh.userData.raycastCity = this.model;
+		this.cityMesh.userData.name = this.model.name.get();
 		this.scene.add(this.cityMesh);
 
 		this.updatePosition();

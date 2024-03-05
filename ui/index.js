@@ -7,6 +7,8 @@ const DEBUG_ENABLED = true;
 
 const game = new MyGameModel(DEBUG_ENABLED);
 
+game.isInDebugMode.set(false);
+
 const wgge = new Wgge(
 	new MyGameController(game),
 	new MyGameRenderer(game, window.document.body)

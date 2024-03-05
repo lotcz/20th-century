@@ -1,26 +1,30 @@
 import ObjectModel from "wgge/core/model/ObjectModel";
-import ImageModel from "wgge/game/resources/image/ImageModel";
-import StringValue from "wgge/core/model/value/StringValue";
+import AlienPanelModel from "../../panel/AlienPanelModel";
+import ImageViewModel from "wgge/game/resources/image/ImageViewModel";
+import WorldConstants from "../../util/WorldConstants";
 
 export default class ResearchModel extends ObjectModel {
 
 	/**
-	 * @type ImageModel
+	 * @type ImageViewModel
 	 */
 	background;
 
 	/**
-	 * @type StringValue
+	 * @type AlienPanelModel
 	 */
-	custom;
+	researchPanel;
+
 
 	constructor() {
 		super();
 
-		this.custom = this.addProperty('custom', new StringValue());
+		this.researchPanel = this.addProperty('researchPanel', new AlienPanelModel());
+		this.researchPanel.size.set(WorldConstants.PANEL_DETAIL_SIZE);
+		this.researchPanel.alignment.set(-1, 0);
 
-		this.background = this.addProperty('background', new ImageModel());
-		this.background.uri.set('img/interior2.png');
+		this.background = this.addProperty('background', new ImageViewModel());
+		this.background.image.uri.set('img/interior1.png');
 		this.background.zoom.set(0);
 
 	}

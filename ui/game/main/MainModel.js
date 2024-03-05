@@ -1,13 +1,11 @@
 import ObjectModel from "wgge/core/model/ObjectModel";
 import GlobeModel from "./globe/GlobeModel";
 import AlienPanelModel from "../panel/AlienPanelModel";
-import MenuModel from "wgge/game/menu/MenuModel";
-import MenuItemModel from "wgge/game/menu/item/MenuItemModel";
 import StringValue from "wgge/core/model/value/StringValue";
-import ScannerModel from "./scanner/ScannerModel";
 import StrategicModel from "./strategic/StrategicModel";
+import Vector2 from "wgge/core/model/vector/Vector2";
+import WorldConstants from "../util/WorldConstants";
 
-export const INTERIOR_TYPE_SCANNER = 'scanner';
 export const INTERIOR_TYPE_STRATEGIC = 'strategic';
 export const INTERIOR_TYPE_RESEARCH = 'research';
 
@@ -29,16 +27,6 @@ export default class MainModel extends ObjectModel {
 	mainInfoPanel;
 
 	/**
-	 * @type MenuModel
-	 */
-	infoMenu;
-
-	/**
-	 * @type ScannerModel
-	 */
-	scanner;
-
-	/**
 	 * @type StrategicModel
 	 */
 	strategic;
@@ -50,13 +38,9 @@ export default class MainModel extends ObjectModel {
 		this.interiorType = this.addProperty('interiorType', new StringValue(INTERIOR_TYPE_STRATEGIC));
 
 		this.mainInfoPanel = this.addProperty('mainInfoPanel', new AlienPanelModel());
-		this.mainInfoPanel.size.set(150, 450);
-		this.mainInfoPanel.alignment.set(-1, 1);
+		this.mainInfoPanel.size.set(WorldConstants.PANEL_SIDE_SIZE);
+		this.mainInfoPanel.alignment.set(new Vector2(-1, 0));
 
-		this.infoMenu = this.addProperty('infoMenu', new MenuModel());
-		this.infoMenu.items.add(new MenuItemModel('Research', () => this.interiorType.set(INTERIOR_TYPE_RESEARCH)));
-
-		this.scanner = this.addProperty('scanner', new ScannerModel());
 		this.strategic = this.addProperty('strategic', new StrategicModel());
 
 	}

@@ -1,12 +1,22 @@
 import ControllerBase from "wgge/core/controller/ControllerBase";
-import AnimationVector2Controller from "wgge/core/controller/AnimationVector2Controller";
-import {EASING_CUBIC_IN} from "wgge/core/animation/ProgressValue";
+import AnimationFloatController from "wgge/core/controller/AnimationFloatController";
 import Vector2 from "wgge/core/model/vector/Vector2";
+import AnimationVector2Controller from "wgge/core/controller/AnimationVector2Controller";
+import WorldConstants from "../../util/WorldConstants";
+import {EASING_CUBIC_IN} from "wgge/core/animation/ProgressValue";
+import {INTERIOR_TYPE_STRATEGIC} from "../MainModel";
+import MenuItemModel from "wgge/game/menu/item/MenuItemModel";
+
+const BACKGROUND_COORDS_ON = new Vector2(960, 640);
+const BACKGROUND_ZOOM_ON = 1.1;
+
+const BACKGROUND_COORDS_OFF = new Vector2(1280, 630);
+const BACKGROUND_ZOOM_OFF = 4.2;
 
 export default class ResearchController extends ControllerBase {
 
 	/**
-	 * @type MainModel
+	 * @type SaveGameModel
 	 */
 	model;
 
@@ -15,105 +25,101 @@ export default class ResearchController extends ControllerBase {
 
 		this.model = model;
 
-		this.mouseAnimation = null;
-
 		this.addAutoEvent(
-			this.game.controls,
-			'zoom',
-			(z) => this.onZoom(z)
-		);
-
-		this.addAutoEvent(
-			this.game.controls,
-			'key-up',
-			(k) => this.onKeyUp(k)
-		);
-
-		this.addAutoEvent(
-			this.game.controls,
-			'key-down',
-			(k) => this.onKeyDown(k)
-		);
-
-		this.addAutoEvent(
-			this.game.controls,
-			'left-click',
-			(k) => this.onClick(k)
-		);
-
-		this.addAutoEvent(
-			this.game.controls.mouseCoordinates,
+			this.game.viewBoxSize,
 			'change',
-			() => this.onMouseMove(this.game.controls.mouseCoordinates)
+			() => this.resize(),
+			true
 		);
 
 	}
 
 	activateInternal() {
+		this.animateIn();
 
+		this.model.main.mainInfoPanel.menu.items.reset();
+		this.model.main.mainInfoPanel.menu.items.add(new MenuItemModel('Strategic', () => this.animateOut()));
 	}
 
-	updateInternal(delta) {
-
+	resize() {
+		this.model.research.background.viewSize.set(this.game.viewBoxSize);
 	}
 
-	onZoom(z) {
-		//this.model.globe.zoom.increase(z > 0 ? -0.5 : 0.5);
+	getPanelOffsetOff() {
+		return new Vector2(
+			- (WorldConstants.PANEL_DETAIL_SIZE.x) + WorldConstants.PANEL_SIDE_SIZE.x,
+			0
+		);
 	}
 
-	onKeyDown(k) {
-
+	getPanelOffsetOn() {
+		return new Vector2(
+			WorldConstants.PANEL_SIDE_SIZE.x + WorldConstants.PANEL_MARGIN.x,
+			0
+		);
 	}
 
-	onKeyUp(k) {
+	animateIn() {
+		this.model.research.researchPanel.offset.set(this.getPanelOffsetOff());
+		this.model.research.background.coordinates.set(BACKGROUND_COORDS_OFF);
+		this.model.research.background.zoom.set(BACKGROUND_ZOOM_OFF);
 
-	}
-
-	onClick(coords) {
-		return;
-		const center = this.game.viewBoxSize.multiply(0.5);
-		const target = new Vector2(
-			this.model.scanner.background.coordinates.x + (coords.x - center.x),
-			this.model.scanner.background.coordinates.y + (coords.y - center.y)
+		this.addChild(
+			new AnimationVector2Controller(
+				this.game,
+				this.model.research.researchPanel.offset,
+				this.getPanelOffsetOn(),
+				500,
+				(v) => Math.log2(v) / 4 + 1
+			)
+		);
+		this.addChild(
+			new AnimationFloatController(
+				this.game,
+				this.model.research.background.zoom,
+				BACKGROUND_ZOOM_ON,
+				1000
+			)
 		);
 		this.addChild(
 			new AnimationVector2Controller(
 				this.game,
-				this.model.scanner.background.coordinates,
-				target,
+				this.model.research.background.coordinates,
+				BACKGROUND_COORDS_ON,
+				1000
+			)
+		);
+	}
+
+	animateOut() {
+		this.resetChildren();
+		this.addChild(
+			new AnimationVector2Controller(
+				this.game,
+				this.model.research.researchPanel.offset,
+				this.getPanelOffsetOff(),
 				500,
 				EASING_CUBIC_IN
 			)
 		);
-
+		this.addChild(
+			new AnimationFloatController(
+				this.game,
+				this.model.research.background.zoom,
+				BACKGROUND_ZOOM_OFF,
+				1000
+			)
+		);
+		this.addChild(
+			new AnimationVector2Controller(
+				this.game,
+				this.model.research.background.coordinates,
+				BACKGROUND_COORDS_OFF,
+				1000
+			).onFinished(() => {
+				this.model.main.interiorType.set(INTERIOR_TYPE_STRATEGIC);
+			})
+		);
 	}
 
-	onMouseMove(coords) {
-		if (this.mouseAnimation && this.mouseAnimation.isActivated) {
-			this.removeChild(this.mouseAnimation);
-		}
-
-		const center = this.game.viewBoxSize.multiply(0.5);
-		const diff = new Vector2(
-			(coords.x - center.x) / center.x,
-			(coords.y - center.y) / center.y
-		);
-
-
-		const imageCenter = this.model.scanner.background.size.multiply(0.5);
-		const target = new Vector2(
-			imageCenter.x + (diff.x * imageCenter.x),
-			imageCenter.y + (diff.y * imageCenter.y)
-		);
-
-		this.model.scanner.custom.set(target.toString());
-
-		this.mouseAnimation = new AnimationVector2Controller(
-			this.game,
-			this.model.scanner.background.coordinates,
-			target,
-			500
-		)
-		this.addChild(this.mouseAnimation);
-	}
 }

@@ -25,7 +25,7 @@ export default class ParticleController extends ControllerBase {
 			this.model.opacity.set(this.model.lifetime.get() / this.model.fadeOutDuration.get());
 		}
 
-		this.model.position.add(this.model.movement.multiply(deltaSecs));
+		this.model.position.set(this.model.position.add(this.model.movement.multiply(deltaSecs)));
 		this.model.scale.increase(this.model.scaleGrowth.get() * deltaSecs);
 		if (this.model.scale.get() < 0) {
 			this.model.scale.set(0);

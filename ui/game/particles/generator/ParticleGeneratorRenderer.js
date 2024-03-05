@@ -1,6 +1,6 @@
 import CollectionRenderer from "wgge/core/renderer/generic/CollectionRenderer";
 import ParticleRenderer from "../ParticleRenderer";
-import ThreeRenderer from "../../util/ThreeRenderer";
+import ThreeRenderer from "wgge/core/renderer/three/ThreeRenderer";
 
 export default class ParticleGeneratorRenderer extends ThreeRenderer {
 

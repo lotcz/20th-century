@@ -1,9 +1,8 @@
 import ControllerBase from "wgge/core/controller/ControllerBase";
 import GlobeController from "./globe/GlobeController";
-import ScannerController from "./scanner/ScannerController";
-import ConditionalNodeController from "wgge/core/controller/ConditionalNodeController";
-import {INTERIOR_TYPE_SCANNER} from "./MainModel";
 import StrategicController from "./strategic/StrategicController";
+import SwitchController from "wgge/core/renderer/generic/SwitchController";
+import ResearchController from "./research/ResearchController";
 
 export default class MainController extends ControllerBase {
 
@@ -20,12 +19,14 @@ export default class MainController extends ControllerBase {
 		this.addChild(new GlobeController(this.game, this.model.main.globe));
 
 		this.addChild(
-			new ConditionalNodeController(
+			new SwitchController(
 				this.game,
+				this.model,
 				this.model.main.interiorType,
-				() => this.model.main.interiorType.equalsTo(INTERIOR_TYPE_SCANNER),
-				() => new ScannerController(this.game, this.model),
-				() => new StrategicController(this.game, this.model.main)
+				{
+					'strategic': () => new StrategicController(this.game, this.model),
+					'research': () => new ResearchController(this.game, this.model)
+				}
 			)
 		);
 

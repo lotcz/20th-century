@@ -40,6 +40,7 @@ export default class PanelVisitorRenderer extends DomRenderer {
 		this.dom.style.top = `${position.y}px`;
 		this.dom.style.width = `${this.model.size.x}px`;
 		this.dom.style.height = `${this.model.size.y}px`;
+		this.dom.style.opacity = this.model.opacity.get();
 	}
 
 }

@@ -5,55 +5,61 @@ import FloatValue from "wgge/core/model/value/FloatValue";
 import Vector2 from "wgge/core/model/vector/Vector2";
 import WorldConstants from "../../util/WorldConstants";
 import ParticleGeneratorModel from "wgge/core/particles/generator/ParticleGeneratorModel";
+import BoolValue from "wgge/core/model/value/BoolValue";
 
 export default class UfoModel extends ObjectModel {
 
 	/**
 	 * @type Vector2
 	 */
-	ufoCoordinates;
+	coordinates;
 
 	/**
 	 * @type FloatValue
 	 */
-	ufoAltitude;
+	altitude;
 
 	/**
 	 * @type Vector3
 	 */
-	ufoPosition;
+	position;
 
 	/**
 	 * @type FloatValue
 	 */
-	ufoSpeed;
+	speed;
 
 	/**
 	 * @type ParticleGeneratorModel
 	 */
-	ufoExhaust;
+	exhaust;
 
 	/**
 	 * @type ParticleGeneratorModel
 	 */
 	ufoLight;
 
+	/**
+	 * @type BoolValue
+	 */
+	ufoScannerOn;
+
 	constructor() {
 		super();
 
-		this.ufoCoordinates = this.addProperty('ufoCoordinates', new Vector2());
-		this.ufoAltitude = this.addProperty('ufoAltitude', new FloatValue(WorldConstants.UFO_MEDIUM_ALTITUDE));
-		this.ufoPosition = this.addProperty('ufoPosition', new Vector3());
-		this.ufoSpeed = this.addProperty('ufoSpeed', new FloatValue());
+		this.coordinates = this.addProperty('coordinates', new Vector2());
+		this.altitude = this.addProperty('altitude', new FloatValue(WorldConstants.UFO_MEDIUM_ALTITUDE));
+		this.position = this.addProperty('position', new Vector3());
+		this.speed = this.addProperty('speed', new FloatValue());
 
-		this.ufoCoordinates.addEventListener('change', () => this.updatePosition());
-		this.ufoAltitude.addEventListener('change', () => this.updatePosition());
-		this.ufoPosition.addEventListener('change', () => this.updateExhaust());
-		this.ufoSpeed.addEventListener('change', () => this.updateExhaust());
+		this.coordinates.addEventListener('change', () => this.updatePosition());
+		this.altitude.addEventListener('change', () => this.updatePosition());
+		this.position.addEventListener('change', () => this.updateExhaust());
+		this.speed.addEventListener('change', () => this.updateExhaust());
 
-		this.ufoExhaust = this.addProperty('ufoExhaust', new ParticleGeneratorModel());
-		this.ufoExhaust.particleTemplate.imageUrl.set('img/smoke-green.png');
-		this.ufoExhaust.particleTemplate.scale.set(0.1);
+		this.exhaust = this.addProperty('exhaust', new ParticleGeneratorModel());
+		this.exhaust.particleTemplate.imageUrl.set('img/smoke-green.png');
+		this.exhaust.particleTemplate.scale.set(0.1);
 
 		this.ufoLight = this.addProperty('ufoLight', new ParticleGeneratorModel());
 		this.ufoLight.particleTemplate.imageUrl.set('img/smoke-red.png');
@@ -68,17 +74,19 @@ export default class UfoModel extends ObjectModel {
 		this.ufoLight.particlesPerSecond.set(8);
 		this.ufoLight.on.set(true);
 
+		this.ufoScannerOn = this.addProperty('ufoScannerOn', new BoolValue(false));
+
 		this.updatePosition();
 
 	}
 
 	updatePosition() {
-		this.ufoPosition.set(GpsUtil.coordsToPositionRad(this.ufoCoordinates, this.ufoAltitude.get()));
+		this.position.set(GpsUtil.coordsToPositionRad(this.coordinates, this.altitude.get()));
 	}
 
 	updateExhaust() {
-		this.ufoExhaust.on.set(this.ufoSpeed.get() > 0);
-		this.ufoExhaust.position.set(this.ufoPosition);
+		this.exhaust.on.set(this.speed.get() > 0);
+		this.exhaust.position.set(this.position);
 	}
 
 }

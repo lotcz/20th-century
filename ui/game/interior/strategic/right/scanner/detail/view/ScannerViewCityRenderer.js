@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import GpsUtil from "../../../../../util/GpsUtil";
-import WorldConstants from "../../../../../util/WorldConstants";
+import GpsUtil from "../../../../../../util/GpsUtil";
+import WorldConstants from "../../../../../../util/WorldConstants";
 import ThreeRenderer from "wgge/core/renderer/three/ThreeRenderer";
 
 export default class ScannerViewCityRenderer extends ThreeRenderer {
@@ -21,7 +21,7 @@ export default class ScannerViewCityRenderer extends ThreeRenderer {
 
 	activateInternal() {
 		this.cityMesh = new THREE.Mesh(this.getGeometry(), this.getMaterial());
-		this.cityMesh.raycastCity = this;
+		this.cityMesh.userData.raycastCity = this.model;
 		this.scene.add(this.cityMesh);
 
 		this.updatePosition();

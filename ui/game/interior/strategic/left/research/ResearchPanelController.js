@@ -2,7 +2,7 @@ import ControllerBase from "wgge/core/controller/ControllerBase";
 import Vector2 from "wgge/core/model/vector/Vector2";
 import AnimationVector2Controller from "wgge/core/controller/AnimationVector2Controller";
 import WorldConstants from "../../../../util/WorldConstants";
-import {EASING_CUBIC_IN} from "wgge/core/animation/ProgressValue";
+import {EASING_SPHERE_IN, EASING_SPHERE_OUT} from "wgge/core/animation/ProgressValue";
 import MenuItemModel from "wgge/game/menu/item/MenuItemModel";
 
 export default class ResearchPanelController extends ControllerBase {
@@ -22,9 +22,9 @@ export default class ResearchPanelController extends ControllerBase {
 	activateInternal() {
 		this.animateIn();
 
-		this.model.strategic.mainInfoPanel.menu.items.reset();
-		this.model.strategic.mainInfoPanel.menu.items.add(new MenuItemModel('Menu', () => this.model.interiorType.set('menu')));
-		const button = this.model.strategic.mainInfoPanel.menu.items.add(new MenuItemModel('Research', () => this.animateOut()));
+		this.model.strategic.inventoryPanel.menu.items.reset();
+		this.model.strategic.inventoryPanel.menu.items.add(new MenuItemModel('Menu', () => this.model.interiorType.set('menu')));
+		const button = this.model.strategic.inventoryPanel.menu.items.add(new MenuItemModel('Research', () => this.animateOut()));
 		button.isActive.set(true);
 	}
 
@@ -51,7 +51,7 @@ export default class ResearchPanelController extends ControllerBase {
 				this.model.strategic.researchPanel.offset,
 				this.getPanelOffsetOn(),
 				500,
-				(v) => Math.log2(v) / 4 + 1
+				EASING_SPHERE_OUT
 			)
 		);
 
@@ -65,9 +65,9 @@ export default class ResearchPanelController extends ControllerBase {
 				this.model.strategic.researchPanel.offset,
 				this.getPanelOffsetOff(),
 				500,
-				EASING_CUBIC_IN
+				EASING_SPHERE_IN
 			).onFinished(() => {
-				this.model.strategic.selectedPanelLeft.set('info');
+				this.model.strategic.selectedPanelLeft.set('inventory');
 			})
 		);
 	}

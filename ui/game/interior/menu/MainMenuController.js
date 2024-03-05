@@ -4,7 +4,7 @@ import Vector2 from "wgge/core/model/vector/Vector2";
 import AnimationVector2Controller from "wgge/core/controller/AnimationVector2Controller";
 import MenuItemModel from "wgge/game/menu/item/MenuItemModel";
 import WorldConstants from "../../util/WorldConstants";
-import {EASING_LOG_OUT} from "wgge/core/animation/ProgressValue";
+import AnimationDelayController from "wgge/core/controller/AnimationDelayController";
 
 const BACKGROUND_COORDS_ON = new Vector2(960, 640);
 const BACKGROUND_ZOOM_ON = 1.1;
@@ -54,21 +54,29 @@ export default class MainMenuController extends ControllerBase {
 	}
 
 	getPanelOffsetOn() {
-		return new Vector2(0,0);
+		return new Vector2(0, 0);
 	}
 
 	animateIn() {
 		this.model.mainMenuPanel.offset.set(this.getPanelOffsetOff());
 		this.model.mainMenuPanel.background.coordinates.set(BACKGROUND_COORDS_OFF);
 		this.model.mainMenuPanel.background.zoom.set(BACKGROUND_ZOOM_OFF);
+		this.model.mainMenuPanel.background.opacity.set(0);
 
 		this.addChild(
 			new AnimationVector2Controller(
 				this.game,
 				this.model.mainMenuPanel.offset,
 				this.getPanelOffsetOn(),
-				500,
-				EASING_LOG_OUT
+				500
+			)
+		);
+		this.addChild(
+			new AnimationFloatController(
+				this.game,
+				this.model.mainMenuPanel.background.opacity,
+				1,
+				250
 			)
 		);
 		this.addChild(
@@ -91,6 +99,24 @@ export default class MainMenuController extends ControllerBase {
 
 	animateOut() {
 		this.resetChildren();
+		this.addChild(
+			new AnimationDelayController(
+				this.game,
+				this.model,
+				250,
+				false
+			).onFinished(() => {
+				this.addChild(
+					new AnimationFloatController(
+						this.game,
+						this.model.mainMenuPanel.background.opacity,
+						0,
+						250
+					)
+				);
+			})
+		);
+
 		this.addChild(
 			new AnimationVector2Controller(
 				this.game,

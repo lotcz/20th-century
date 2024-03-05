@@ -7,7 +7,7 @@ import DirtyValue from "wgge/core/model/value/DirtyValue";
 import Vector2 from "wgge/core/model/vector/Vector2";
 import WorldConstants from "../../util/WorldConstants";
 import CruisePanelModel from "./right/cruise/CruisePanelModel";
-import ScannerPanelModel from "./right/scanner/ScannerPanelModel";
+import ScannerModel from "./right/scanner/ScannerModel";
 
 export default class StrategicModel extends ObjectModel {
 
@@ -34,10 +34,15 @@ export default class StrategicModel extends ObjectModel {
 	/**
 	 * @type AlienPanelModel
 	 */
+	inventoryPanel;
+
+	/**
+	 * @type AlienPanelModel
+	 */
 	researchPanel;
 
 	/**
-	 * @type ScannerPanelModel
+	 * @type ScannerModel
 	 */
 	scannerPanel;
 
@@ -56,18 +61,22 @@ export default class StrategicModel extends ObjectModel {
 
 		this.cameraFollowing = this.addProperty('cameraFollowing', new BoolValue(false));
 
-		this.selectedPanelLeft = this.addProperty('selectedPanelLeft', new DirtyValue('info'));
+		this.selectedPanelLeft = this.addProperty('selectedPanelLeft', new DirtyValue('inventory'));
 		this.selectedPanelRight = this.addProperty('selectedPanelRight', new DirtyValue('cruise'));
 
+		this.inventoryPanel = this.addProperty('inventoryPanel', new AlienPanelModel());
+		this.inventoryPanel.size.set(WorldConstants.PANEL_SIDE_SIZE);
+		this.inventoryPanel.alignment.set(new Vector2(-1, 0));
+
 		this.mainInfoPanel = this.addProperty('mainInfoPanel', new AlienPanelModel());
-		this.mainInfoPanel.size.set(WorldConstants.PANEL_SIDE_SIZE);
-		this.mainInfoPanel.alignment.set(new Vector2(-1, 0));
+		this.mainInfoPanel.size.set(450, 75);
+		this.mainInfoPanel.alignment.set(new Vector2(0, -1));
 
 		this.researchPanel = this.addProperty('researchPanel', new AlienPanelModel());
 		this.researchPanel.size.set(WorldConstants.PANEL_DETAIL_SIZE);
 		this.researchPanel.alignment.set(new Vector2(-1, 0));
 
-		this.scannerPanel = this.addProperty('scannerPanel', new ScannerPanelModel());
+		this.scannerPanel = this.addProperty('scannerPanel', new ScannerModel());
 
 		this.cruisePanel = this.addProperty('cruisePanel', new CruisePanelModel());
 

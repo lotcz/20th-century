@@ -15,7 +15,7 @@ export default class UfoController extends ControllerBase {
 
 		this.lastPosition = null;
 
-		this.addChild(new ParticleGeneratorController(this.game, this.model.ufoExhaust));
+		this.addChild(new ParticleGeneratorController(this.game, this.model.exhaust));
 		this.addChild(new ParticleGeneratorController(this.game, this.model.ufoLight));
 
 		this.lastPosition = null;
@@ -32,10 +32,10 @@ export default class UfoController extends ControllerBase {
 		if (this.lastPosition && this.lastPositionTime) {
 			const time = (now - this.lastPositionTime) / 1000;
 			if (time > 0) {
-				this.model.ufoSpeed.set(this.model.ufoPosition.distanceTo(this.lastPosition) / time);
+				this.model.speed.set(this.model.position.distanceTo(this.lastPosition) / time);
 			}
 		}
-		this.lastPosition = this.model.ufoPosition.clone();
+		this.lastPosition = this.model.position.clone();
 		this.lastPositionTime = now;
 	}
 

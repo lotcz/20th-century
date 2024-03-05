@@ -1,6 +1,5 @@
 import AlienPanelModel from "../../util/panel/AlienPanelModel";
 import ImageViewModel from "wgge/game/resources/image/ImageViewModel";
-import WorldConstants from "../../util/WorldConstants";
 
 export default class MainMenuPanelModel extends AlienPanelModel {
 
@@ -12,7 +11,8 @@ export default class MainMenuPanelModel extends AlienPanelModel {
 	constructor() {
 		super();
 
-		this.size.set(WorldConstants.PANEL_DETAIL_SIZE);
+		this.size.set(250, 250);
+		this.alignment.set(-0.75, 0.55);
 
 		this.background = this.addProperty('background', new ImageViewModel());
 		this.background.image.uri.set('img/interior1.png');

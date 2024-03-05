@@ -2,8 +2,9 @@ import * as THREE from "three";
 import DOMHelper from "wgge/core/helper/DOMHelper";
 import DomRenderer from "wgge/core/renderer/dom/DomRenderer";
 import CollectionRenderer from "wgge/core/renderer/generic/CollectionRenderer";
-import WorldConstants from "../../../../../util/WorldConstants";
+import WorldConstants from "../../../../../../util/WorldConstants";
 import ScannerViewCityRenderer from "./ScannerViewCityRenderer";
+import Vector2 from "wgge/core/model/vector/Vector2";
 
 export default class ScannerViewRenderer extends DomRenderer {
 
@@ -32,7 +33,7 @@ export default class ScannerViewRenderer extends DomRenderer {
 		);
 
 		this.addAutoEvent(
-			this.model.strategic.scannerPanel.scannerViewSize,
+			this.model.strategic.scannerPanel.detail.scannerViewSize,
 			'change',
 			() => this.resize(),
 			true
@@ -66,14 +67,14 @@ export default class ScannerViewRenderer extends DomRenderer {
 		if (this.model.globe.zoom.isDirty) {
 			this.updateCameraZoom();
 		}
-		if (this.model.globe.ufo.ufoPosition.isDirty) {
+		if (this.model.globe.ufo.position.isDirty) {
 			this.updateCameraPosition();
 		}
 		this.renderer.render(this.scene, this.camera);
 	}
 
 	updateCameraPosition() {
-		const position= this.model.globe.ufo.ufoPosition;
+		const position= this.model.globe.ufo.position;
 		this.camera.position.set(position.x, position.y, position.z);
 		this.camera.lookAt(0, 0, 0);
 	}
@@ -84,7 +85,7 @@ export default class ScannerViewRenderer extends DomRenderer {
 	}
 
 	resize() {
-		const size = this.model.strategic.scannerPanel.scannerViewSize;
+		const size = this.model.strategic.scannerPanel.detail.scannerViewSize;
 		this.renderer.setSize(size.x, size.y);
 		this.camera.aspect = size.x / size.y;
 		this.updateCameraZoom();
@@ -92,11 +93,19 @@ export default class ScannerViewRenderer extends DomRenderer {
 	}
 
 	raycast() {
-		const size = this.model.strategic.scannerPanel.scannerViewSize;
+		const size = this.model.strategic.scannerPanel.detail.scannerViewSize;
+		const rect = this.container.getBoundingClientRect();
+		const position = new Vector2(rect.left, rect.top);
 		const raycaster = new THREE.Raycaster();
 		const mouse = new THREE.Vector2();
-		mouse.x = (this.game.controls.mouseCoordinates.x / this.game.viewBoxSize.x) * 2 - 1;
-		mouse.y = -(this.game.controls.mouseCoordinates.y / this.game.viewBoxSize.y) * 2 + 1;
+		const mouseCoordinates = this.game.controls.mouseCoordinates.subtract(position);
+
+		if (!(mouseCoordinates.x > 0 && mouseCoordinates.x < size.x && mouseCoordinates.y > 0 && mouseCoordinates.y < size.y)) {
+			return;
+		}
+
+		mouse.x = (mouseCoordinates.x / size.x) * 2 - 1;
+		mouse.y = -(mouseCoordinates.y / size.y) * 2 + 1;
 
 		raycaster.setFromCamera(mouse, this.camera);
 		const intersects = raycaster.intersectObject(this.scene, true);
@@ -105,13 +114,13 @@ export default class ScannerViewRenderer extends DomRenderer {
 			for (let i = 0, max = intersects.length; i < max; i++) {
 				const object = intersects[i].object;
 				if (!object) continue;
-				if (object.raycastCity) {
-					this.model.triggerEvent('raycast-city', object.raycastCity);
+				if (object.userData.raycastCity) {
+					this.model.globe.cursorAtCity.set(object.userData.raycastCity);
 					return;
 				}
 			}
 		}
-		this.model.triggerEvent('raycast-city', null);
+		this.model.globe.cursorAtCity.set(null);
 	}
 
 	restoreSceneFromCache() {
@@ -133,7 +142,7 @@ export default class ScannerViewRenderer extends DomRenderer {
 
 		this.camera = new THREE.PerspectiveCamera(
 			33,
-			this.model.strategic.scannerPanel.scannerViewSize.x / this.model.strategic.scannerPanel.scannerViewSize.y,
+			this.model.strategic.scannerPanel.detail.scannerViewSize.x / this.model.strategic.scannerPanel.detail.scannerViewSize.y,
 			0.1,
 			WorldConstants.CAMERA_VISIBILITY_RADIUS
 		);

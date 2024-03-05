@@ -1,11 +1,10 @@
 import ControllerBase from "wgge/core/controller/ControllerBase";
-import WorldConstants from "../../../../util/WorldConstants";
 import Vector2 from "wgge/core/model/vector/Vector2";
 import AnimationVector2Controller from "wgge/core/controller/AnimationVector2Controller";
-import {EASING_CUBIC_IN} from "wgge/core/animation/ProgressValue";
-import MenuItemModel from "wgge/game/menu/item/MenuItemModel";
+import {EASING_SPHERE_IN, EASING_SPHERE_OUT} from "wgge/core/animation/ProgressValue";
+import WorldConstants from "../../../../../util/WorldConstants";
 
-export default class ScannerPanelController extends ControllerBase {
+export default class ScannerDetailController extends ControllerBase {
 
 	/**
 	 * @type SaveGameModel
@@ -18,15 +17,21 @@ export default class ScannerPanelController extends ControllerBase {
 		this.model = model;
 
 		this.addAutoEvent(
-			this.model.strategic.scannerPanel.size,
+			this.model.strategic.scannerPanel.detail.size,
 			'change',
 			() => {
 				const borders = WorldConstants.PANEL_PADDING.multiply(2).add(new Vector2(2, 2)) ;
 				const space = new Vector2(0, 0);
-				const size = this.model.strategic.scannerPanel.size.subtract(borders).subtract(space);
-				this.model.strategic.scannerPanel.scannerViewSize.set(size);
+				const size = this.model.strategic.scannerPanel.detail.size.subtract(borders).subtract(space);
+				this.model.strategic.scannerPanel.detail.scannerViewSize.set(size);
 			},
 			true
+		);
+
+		this.addAutoEvent(
+			this.model.strategic.scannerPanel,
+			'animate-out',
+			() => this.animateOut()
 		);
 
 	}
@@ -34,10 +39,6 @@ export default class ScannerPanelController extends ControllerBase {
 	activateInternal() {
 		this.animateIn();
 
-		const scannerMenu = this.model.strategic.cruisePanel.toggleScannerMenu;
-		scannerMenu.items.reset();
-		const button = scannerMenu.items.add(new MenuItemModel('Scanner', () => this.animateOut()));
-		button.isActive.set(true);
 	}
 
 	getPanelOffsetOff() {
@@ -55,29 +56,32 @@ export default class ScannerPanelController extends ControllerBase {
 	}
 
 	animateIn() {
-		this.model.strategic.scannerPanel.offset.set(this.getPanelOffsetOff());
+		this.model.strategic.scannerPanel.detail.offset.set(this.getPanelOffsetOff());
 
 		this.addChild(
 			new AnimationVector2Controller(
 				this.game,
-				this.model.strategic.scannerPanel.offset,
+				this.model.strategic.scannerPanel.detail.offset,
 				this.getPanelOffsetOn(),
 				500,
-				(v) => Math.log2(v) / 4 + 1
-			)
+				EASING_SPHERE_OUT
+			).onFinished(() => {
+				this.model.globe.ufo.ufoScannerOn.set(true);
+			})
 		);
 
 	}
 
 	animateOut() {
 		this.resetChildren();
+		this.model.globe.ufo.ufoScannerOn.set(false);
 		this.addChild(
 			new AnimationVector2Controller(
 				this.game,
-				this.model.strategic.scannerPanel.offset,
+				this.model.strategic.scannerPanel.detail.offset,
 				this.getPanelOffsetOff(),
 				500,
-				EASING_CUBIC_IN
+				EASING_SPHERE_IN
 			).onFinished(() => {
 				this.model.strategic.selectedPanelRight.set('cruise');
 			})

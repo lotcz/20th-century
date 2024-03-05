@@ -9,10 +9,10 @@ import WorldConstants from "../../util/WorldConstants";
 import NumberHelper from "wgge/core/helper/NumberHelper";
 import {EVENT_LEFT_CLICK} from "wgge/game/controls/ControlsModel";
 import SwitchController from "wgge/core/renderer/generic/SwitchController";
-import ScannerPanelController from "./right/scanner/ScannerPanelController";
+import ScannerController from "./right/scanner/ScannerController";
 import ResearchPanelController from "./left/research/ResearchPanelController";
 import CruisePanelController from "./right/cruise/CruisePanelController";
-import InfoPanelController from "./left/info/InfoPanelController";
+import InventoryPanelController from "./left/inventory/InventoryPanelController";
 
 export default class StrategicController extends ControllerBase {
 
@@ -42,7 +42,7 @@ export default class StrategicController extends ControllerBase {
 				this.model,
 				this.model.strategic.selectedPanelLeft,
 				{
-					'info': () => new InfoPanelController(this.game, this.model),
+					'inventory': () => new InventoryPanelController(this.game, this.model),
 					'research': () => new ResearchPanelController(this.game, this.model)
 				}
 			)
@@ -55,7 +55,7 @@ export default class StrategicController extends ControllerBase {
 				this.model.strategic.selectedPanelRight,
 				{
 					'cruise': () => new CruisePanelController(this.game, this.model),
-					'scanner': () => new ScannerPanelController(this.game, this.model)
+					'scanner': () => new ScannerController(this.game, this.model)
 				}
 			)
 		);
@@ -100,13 +100,13 @@ export default class StrategicController extends ControllerBase {
 		);
 
 		this.addAutoEvent(
-			this.model.globe.ufo.ufoCoordinates,
+			this.model.globe.ufo.coordinates,
 			'change',
 			() => this.followCoordinates()
 		);
 
 		this.addAutoEvent(
-			this.model.globe.ufo.ufoAltitude,
+			this.model.globe.ufo.altitude,
 			'change',
 			() => this.followAltitude()
 		);
@@ -158,7 +158,7 @@ export default class StrategicController extends ControllerBase {
 
 	followCoordinates() {
 		if (this.model.strategic.cameraFollowing.get() && this.coordinatesBound) {
-			this.model.globe.cameraCoordinates.set(this.model.globe.ufo.ufoCoordinates);
+			this.model.globe.cameraCoordinates.set(this.model.globe.ufo.coordinates);
 		}
 	}
 
@@ -170,7 +170,7 @@ export default class StrategicController extends ControllerBase {
 			return;
 		}
 
-		const target = this.model.globe.ufo.ufoCoordinates;
+		const target = this.model.globe.ufo.coordinates;
 		const distance = this.model.globe.cameraCoordinates.subtract(target).size();
 
 		if (distance <= 0.02 || this.coordinatesBound) {
@@ -211,7 +211,7 @@ export default class StrategicController extends ControllerBase {
 	}
 
 	moveBy(diff) {
-		this.cruiseTo(this.model.globe.ufo.ufoCoordinates.add(diff));
+		this.cruiseTo(this.model.globe.ufo.coordinates.add(diff));
 	}
 
 	cruiseToCity(city) {
@@ -228,13 +228,13 @@ export default class StrategicController extends ControllerBase {
 			this.removeChild(this.cruisingAnimation);
 		}
 		const SPEED = 0.1;
-		const distance = this.model.globe.ufo.ufoCoordinates.subtract(target).size();
+		const distance = this.model.globe.ufo.coordinates.subtract(target).size();
 		if (distance <= 0) return;
 		const duration = distance / SPEED;
 		this.cruisingAnimation = this.addChild(
 			new AnimationRotationVector2Controller(
 				this.game,
-				this.model.globe.ufo.ufoCoordinates,
+				this.model.globe.ufo.coordinates,
 				target,
 				duration * 1000
 			).onFinished(() => {
@@ -246,7 +246,7 @@ export default class StrategicController extends ControllerBase {
 	}
 
 	changeAltitude(diff) {
-		this.altitudeTo(this.model.globe.ufo.ufoAltitude.get() + diff);
+		this.altitudeTo(this.model.globe.ufo.altitude.get() + diff);
 	}
 
 	altitudeTo(target) {
@@ -255,13 +255,13 @@ export default class StrategicController extends ControllerBase {
 		}
 		target = Math.max(WorldConstants.UFO_MIN_ALTITUDE, target);
 		const SPEED = 1;
-		const distance = Math.abs(this.model.globe.ufo.ufoAltitude.get() - target);
+		const distance = Math.abs(this.model.globe.ufo.altitude.get() - target);
 		if (distance <= 0) return;
 		const duration = distance / SPEED;
 		this.altitudeAnimation = this.addChild(
 			new AnimationFloatController(
 				this.game,
-				this.model.globe.ufo.ufoAltitude,
+				this.model.globe.ufo.altitude,
 				target,
 				duration * 1000
 			).onFinished(() => this.altitudeAnimation = null)
@@ -270,7 +270,7 @@ export default class StrategicController extends ControllerBase {
 	}
 
 	getCameraAltitude() {
-		return this.model.globe.ufo.ufoAltitude.get() + WorldConstants.UFO_CAMERA_DISTANCE;
+		return this.model.globe.ufo.altitude.get() + WorldConstants.UFO_CAMERA_DISTANCE;
 	}
 
 	followAltitude() {

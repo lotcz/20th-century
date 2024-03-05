@@ -1,10 +1,10 @@
 import DOMHelper from "wgge/core/helper/DOMHelper";
 import DomRenderer from "wgge/core/renderer/dom/DomRenderer";
-import PanelVisitorRenderer from "../../../../util/panel/PanelVisitorRenderer";
-import MenuRenderer from "wgge/game/menu/MenuRenderer";
+import ConditionalNodeRenderer from "wgge/core/renderer/generic/ConditionalNodeRenderer";
+import PanelVisitorRenderer from "../../../../../util/panel/PanelVisitorRenderer";
 import ScannerViewRenderer from "./view/ScannerViewRenderer";
 
-export default class ScannerPanelRenderer extends DomRenderer {
+export default class ScannerDetailRenderer extends DomRenderer {
 
 	/**
 	 * @type SaveGameModel
@@ -24,7 +24,7 @@ export default class ScannerPanelRenderer extends DomRenderer {
 		this.addChild(
 			new PanelVisitorRenderer(
 				this.game,
-				this.model.strategic.scannerPanel,
+				this.model.strategic.scannerPanel.detail,
 				this.wrapper
 			)
 		);
@@ -35,18 +35,15 @@ export default class ScannerPanelRenderer extends DomRenderer {
 		this.panelBottom = DOMHelper.createElement(this.container, 'div', 'col');
 
 		this.addChild(
-			new MenuRenderer(
+			new ConditionalNodeRenderer(
 				this.game,
-				this.model.strategic.scannerPanel.menu,
-				DOMHelper.createElement(this.panelTop, 'div', 'scanner-menu')
-			)
-		);
-
-		this.addChild(
-			new ScannerViewRenderer(
-				this.game,
-				this.model,
-				DOMHelper.createElement(this.panelCenter, 'div', 'scanner-view')
+				this.model.globe.ufo.ufoScannerOn,
+				() => this.model.globe.ufo.ufoScannerOn.get(),
+				() => new ScannerViewRenderer(
+					this.game,
+					this.model,
+					DOMHelper.createElement(this.panelCenter, 'div', 'scanner-view')
+				)
 			)
 		);
 

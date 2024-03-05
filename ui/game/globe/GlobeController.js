@@ -1,7 +1,7 @@
 import ControllerBase from "wgge/core/controller/ControllerBase";
 import FloatValue from "wgge/core/model/value/FloatValue";
 import HttpHelper from "wgge/core/helper/HttpHelper";
-import CityModel from "./CityModel";
+import CityModel from "./city/CityModel";
 import UfoController from "./ufo/UfoController";
 
 const HALF_CIRCLE = 180;

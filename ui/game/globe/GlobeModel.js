@@ -4,8 +4,9 @@ import Vector2 from "wgge/core/model/vector/Vector2";
 import ModelNodeCollection from "wgge/core/model/collection/ModelNodeCollection";
 import WorldConstants from "../util/WorldConstants";
 import NullableNode from "wgge/core/model/value/NullableNode";
-import CityModel from "./CityModel";
+import CityModel from "./city/CityModel";
 import UfoModel from "./ufo/UfoModel";
+import HumanModel from "../inventory/HumanModel";
 
 export default class GlobeModel extends ObjectModel {
 
@@ -50,7 +51,6 @@ export default class GlobeModel extends ObjectModel {
 
 	/**
 	 * @type ModelNodeCollection<CityModel>
-	 * GPS coordinates of atmosphere rotation
 	 */
 	cities;
 
@@ -58,6 +58,16 @@ export default class GlobeModel extends ObjectModel {
 	 * @type NullableNode<CityModel>
 	 */
 	cursorAtCity;
+
+	/**
+	 * @type ModelNodeCollection<HumanModel>
+	 */
+	humans;
+
+	/**
+	 * @type NullableNode<CityModel>
+	 */
+	cursorAtHuman;
 
 	/**
 	 * @type NullableNode<Vector2>>
@@ -78,8 +88,11 @@ export default class GlobeModel extends ObjectModel {
 
 		this.atmoCoordinates = this.addProperty('atmoCoordinates', new Vector2());
 
-		this.cities = this.addProperty('cities', new ModelNodeCollection());
+		this.cities = this.addProperty('cities', new ModelNodeCollection(() => new CityModel()));
 		this.cursorAtCity = this.addProperty('cursorAtCity', new NullableNode(() => new CityModel()));
+
+		this.humans = this.addProperty('humans', new ModelNodeCollection(() => new HumanModel()));
+		this.cursorAtHuman = this.addProperty('cursorAtHuman', new NullableNode(() => new HumanModel()));
 
 		this.cursorAtGlobe = this.addProperty('cursorAtGlobe', new NullableNode(() => new Vector2()));
 	}

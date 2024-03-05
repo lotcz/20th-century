@@ -4,9 +4,10 @@ export default class WorldConstants {
 
 	// LAYERS
 	static LAYER_DEFAULT = 0;
-	static LAYER_CITIES = 1;
+	static LAYER_GLOBE = 1;
 	static LAYER_ATMOSPHERE = 2;
-	static LAYER_GLOBE = 3;
+	static LAYER_CITIES = 3;
+	static LAYER_SCANNER_OBJECTS = 4;
 
 	// DIMENSIONS (thousands of km)
 	static EARTH_DIAMETER = 12.76;

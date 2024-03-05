@@ -2,7 +2,7 @@ import ObjectModel from "wgge/core/model/ObjectModel";
 import AlienPanelModel from "../../util/panel/AlienPanelModel";
 import BoolValue from "wgge/core/model/value/BoolValue";
 import NullableNode from "wgge/core/model/value/NullableNode";
-import CityModel from "../../globe/CityModel";
+import CityModel from "../../globe/city/CityModel";
 import DirtyValue from "wgge/core/model/value/DirtyValue";
 import Vector2 from "wgge/core/model/vector/Vector2";
 import WorldConstants from "../../util/WorldConstants";

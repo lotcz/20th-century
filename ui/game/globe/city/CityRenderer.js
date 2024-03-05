@@ -1,9 +1,13 @@
 import * as THREE from "three";
-import GpsUtil from "../util/GpsUtil";
-import WorldConstants from "../util/WorldConstants";
+import GpsUtil from "../../util/GpsUtil";
+import WorldConstants from "../../util/WorldConstants";
 import ThreeRenderer from "wgge/core/renderer/three/ThreeRenderer";
 
 export default class CityRenderer extends ThreeRenderer {
+
+	static CITY_MATERIAL_CACHE;
+
+	static CITY_GEOMETRY_CACHE;
 
 	/**
 	 * @type CityModel

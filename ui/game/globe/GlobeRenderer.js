@@ -5,11 +5,12 @@ import DomRenderer from "wgge/core/renderer/dom/DomRenderer";
 import Rotation from "wgge/core/model/vector/Rotation";
 import GpsUtil from "../util/GpsUtil";
 import CollectionRenderer from "wgge/core/renderer/generic/CollectionRenderer";
-import CityRenderer from "./CityRenderer";
+import CityRenderer from "./city/CityRenderer";
 import WorldConstants from "../util/WorldConstants";
 import UfoRenderer from "./ufo/UfoRenderer";
 import Vector3 from "wgge/core/model/vector/Vector3";
 import Vector2 from "wgge/core/model/vector/Vector2";
+import HumanGlobeRenderer from "./human/HumanGlobeRenderer";
 
 export default class GlobeRenderer extends DomRenderer {
 
@@ -173,6 +174,14 @@ export default class GlobeRenderer extends DomRenderer {
 			)
 		);
 
+		this.addChild(
+			new CollectionRenderer(
+				this.game,
+				this.model.humans,
+				(m) => new HumanGlobeRenderer(this.game, m, this.earthGroup)
+			)
+		);
+
 		this.addChild(new UfoRenderer(this.game, this.model.ufo, this.earthGroup));
 	}
 
@@ -259,6 +268,7 @@ export default class GlobeRenderer extends DomRenderer {
 		mouse.y = -(this.game.controls.mouseCoordinates.y / this.game.viewBoxSize.y) * 2 + 1;
 
 		raycaster.setFromCamera(mouse, this.camera);
+		raycaster.layers.disable(WorldConstants.LAYER_DEFAULT);
 		raycaster.layers.enable(WorldConstants.LAYER_CITIES);
 		raycaster.layers.enable(WorldConstants.LAYER_GLOBE);
 		const intersects = raycaster.intersectObject(this.scene, true);

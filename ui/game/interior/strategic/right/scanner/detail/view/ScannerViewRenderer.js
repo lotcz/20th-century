@@ -108,6 +108,9 @@ export default class ScannerViewRenderer extends DomRenderer {
 		mouse.y = -(mouseCoordinates.y / size.y) * 2 + 1;
 
 		raycaster.setFromCamera(mouse, this.camera);
+		raycaster.layers.disable(WorldConstants.LAYER_DEFAULT);
+		raycaster.layers.enable(WorldConstants.LAYER_SCANNER_OBJECTS);
+		raycaster.layers.enable(WorldConstants.LAYER_CITIES);
 		const intersects = raycaster.intersectObject(this.scene, true);
 
 		if (intersects.length > 0) {
@@ -116,6 +119,10 @@ export default class ScannerViewRenderer extends DomRenderer {
 				if (!object) continue;
 				if (object.userData.raycastCity) {
 					this.model.globe.cursorAtCity.set(object.userData.raycastCity);
+					return;
+				}
+				if (object.userData.raycastHuman) {
+					this.model.globe.cursorAtHuman.set(object.userData.raycastHuman);
 					return;
 				}
 			}
@@ -135,7 +142,6 @@ export default class ScannerViewRenderer extends DomRenderer {
 		// THREE
 		this.renderer = new THREE.WebGLRenderer({alpha: true });
 		this.renderer.setClearColor(0x000000, 0);
-
 		this.scene = new THREE.Scene();
 		this.earthGroup = new THREE.Group();
 		this.scene.add(this.earthGroup);
@@ -146,6 +152,10 @@ export default class ScannerViewRenderer extends DomRenderer {
 			0.1,
 			WorldConstants.CAMERA_VISIBILITY_RADIUS
 		);
+		this.camera.layers.enable(WorldConstants.LAYER_DEFAULT);
+		this.camera.layers.enable(WorldConstants.LAYER_GLOBE);
+		this.camera.layers.enable(WorldConstants.LAYER_SCANNER_OBJECTS);
+
 		this.earthGroup.add(this.camera);
 
 		this.ambientLight = new THREE.AmbientLight(0xffffff, 1);

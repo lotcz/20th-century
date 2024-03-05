@@ -40,4 +40,8 @@ export default class HumanModel extends ObjectModel {
 		this.originCountryId = this.addProperty('originCountryId', new IntValue());
 
 	}
+
+	toString() {
+		return `${this.sex.get() ? 'Male' : 'Female'}: ${this.age.get()}`;
+	}
 }

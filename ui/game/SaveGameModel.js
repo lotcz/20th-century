@@ -1,14 +1,12 @@
 import ObjectModel from "wgge/core/model/ObjectModel";
-import MainModel from "./main/MainModel";
 import IntValue from "wgge/core/model/value/IntValue";
-import ResearchModel from "./main/research/ResearchModel";
+import GlobeModel from "./globe/GlobeModel";
+import StringValue from "wgge/core/model/value/StringValue";
+import StrategicModel from "./interior/strategic/StrategicModel";
+import MainMenuPanelModel from "./interior/menu/MainMenuPanelModel";
+import InventoryModel from "./inventory/InventoryModel";
 
 export default class SaveGameModel extends ObjectModel {
-
-	/**
-	 * @type MainModel
-	 */
-	main;
 
 	/**
 	 * @type IntValue
@@ -16,38 +14,43 @@ export default class SaveGameModel extends ObjectModel {
 	year;
 
 	/**
-	 * @type IntValue
+	 * @type GlobeModel
 	 */
-	materials;
+	globe;
 
 	/**
-	 * @type IntValue
+	 * @type InventoryModel
 	 */
-	biologyPoints;
+	inventory;
 
 	/**
-	 * @type IntValue
+	 * @type StringValue
 	 */
-	historyPoints;
+	interiorType;
 
 	/**
-	 * @type ResearchModel
+	 * @type StrategicModel
 	 */
-	research;
+	strategic;
 
+	/**
+	 * @type MainMenuPanelModel
+	 */
+	mainMenuPanel;
 
 	constructor() {
 		super();
 
-		this.main = this.addProperty('main', new MainModel());
-
 		this.year = this.addProperty('year', new IntValue(new Date().getFullYear()));
 
-		this.materials = this.addProperty('materials', new IntValue(0));
-		this.biologyPoints = this.addProperty('biologyPoints', new IntValue(0));
-		this.historyPoints = this.addProperty('historyPoints', new IntValue(0));
+		this.globe = this.addProperty('globe', new GlobeModel());
 
-		this.research = this.addProperty('research', new ResearchModel());
+		this.inventory = this.addProperty('research', new InventoryModel());
+
+		this.interiorType = this.addProperty('interiorType', new StringValue('menu'));
+
+		this.strategic = this.addProperty('strategic', new StrategicModel());
+		this.mainMenuPanel = this.addProperty('mainMenuPanel', new MainMenuPanelModel());
 	}
 
 }
